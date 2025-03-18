@@ -162,7 +162,7 @@ class LinkedList:
     def __iter__(self) -> Optional[ListNode]:
         """
         Add support to allow for iteration e.g.
-            a = LinkedList1()
+            a = LinkedList()
             a.addAtTail(1)
             a.addAtTail(2)
             a.addAtTail(3)
@@ -171,9 +171,9 @@ class LinkedList:
         """
         current_node = self.head
         while current_node is not None:
-            yield current_node
+            yield_node = current_node
             current_node = current_node.next_
-        raise StopIteration
+            yield yield_node
 
     def __repr__(self) -> str:
         if self.head is None:
@@ -353,7 +353,7 @@ class DoublyLinkedList:
     def __iter__(self) -> Optional[DoublyListNode]:
         """
         Add support to allow for iteration e.g.
-            a = LinkedList1()
+            a = DoublyLinkedList()
             a.addAtTail(1)
             a.addAtTail(2)
             a.addAtTail(3)
@@ -362,9 +362,9 @@ class DoublyLinkedList:
         """
         current_node = self.head
         while current_node is not None:
-            yield current_node
+            yield_node = current_node
             current_node = current_node.next_
-        raise StopIteration
+            yield yield_node
 
     def __repr__(self) -> str:
         if self.head is None:

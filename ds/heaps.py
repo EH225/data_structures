@@ -109,10 +109,13 @@ class MinHeap:
         return self.heap[0]
 
     def __str__(self):
-        return str(self.heap)
+        return self.__repr__()
 
     def __repr__(self):
         return str(self.heap)
+
+    def __len__(self):
+        return self.size()
 
 
 class MaxHeap:
@@ -220,7 +223,10 @@ class MaxHeap:
         return self.heap[0]
 
     def __str__(self):
-        return str(self.heap)
+        return self.__repr__()
 
     def __repr__(self):
         return str(self.heap)
+
+    def __len__(self):
+        return self.size()
