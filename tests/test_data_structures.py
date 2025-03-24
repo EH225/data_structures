@@ -414,16 +414,16 @@ def test_LFUCache():
     for i in list(range(20)) + [1, 2, 3]:
         obj.put(i, i * 5)
 
-    assert obj.dict == {1: [5, 1], 2: [10, 1], 3: [15, 1]}
+    assert obj.dict == {1: [5, 1], 2: [10, 1], 3: [15, 1]}, "Test for put failed"
 
     for j in [1, 1, 2, 2, 3, 1, 1]:
-        assert obj.get(j) == j * 5
+        assert obj.get(j) == j * 5, "Test for get failed"
 
     obj.put(7, 7 * 5)
-    assert obj.dict == {1: [5, 5], 2: [10, 3], 7: [35, 1]}
+    assert obj.dict == {1: [5, 5], 2: [10, 3], 7: [35, 1]}, "Test for put failed"
 
     obj.put(7, 7 * 4)
-    assert obj.get(7) == 7 * 4
+    assert obj.get(7) == 7 * 4, "Test for get failed"
 
 
 def test_LRUCache():
@@ -435,10 +435,10 @@ def test_LRUCache():
         obj.put(i, i * 5)
 
     for j in [1, 1, 2, 2, 3, 1, 1]:
-        assert obj.get(j) == j * 5
+        assert obj.get(j) == j * 5, "Test for get failed"
 
     obj.put(7, 7 * 5)
-    assert set(obj.dict.keys()) == set([1, 3, 7])
+    assert set(obj.dict.keys()) == set([1, 3, 7]), "Test for put failed"
 
     obj.put(1, 1 * 4)
-    assert obj.get(1) == 1 * 4
+    assert obj.get(1) == 1 * 4, "Test for get failed"

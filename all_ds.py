@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-This module exists to centralize all the imports from the various other modules into 1 module.
+This module exists to centralize all the imports from the various other modules into 1 module for quick
+reference i.e. one can import all_ds as a module and have access to all the data structures throughout.
 """
 from ds.linked_list import LinkedList, DoublyLinkedList
 from ds.heaps import MinHeap, MaxHeap
