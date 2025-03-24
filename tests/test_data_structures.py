@@ -360,18 +360,18 @@ def test_Trie():
     assert obj.is_prefix("worked") is False
 
     obj.remove_word("is")
-    assert obj.get_word_count("is") == 1
+    assert obj.get_word_count("is") == 1, "Test for get_word_count failed"
     obj.remove_word("is")
-    assert obj.get_word_count("is") == 0
+    assert obj.get_word_count("is") == 0, "Test for get_word_count failed"
     obj.remove_word("is")
-    assert obj.get_word_count("is") == 0
+    assert obj.get_word_count("is") == 0, "Test for get_word_count failed"
     for i in range(10):
         obj.insert("is")
     obj.remove_word("is", remove_all=True)
-    assert obj.get_word_count("is") == 0
+    assert obj.get_word_count("is") == 0, "Test for get_word_count failed"
 
-    assert obj.first_prefix_word("zoo") is None
-    assert obj.first_prefix_word("something") == "some"
+    assert obj.first_prefix_word("zoo") is None, "Test for first_prefix_word failed"
+    assert obj.first_prefix_word("something") == "some", "Test for first_prefix_word failed"
     obj.insert("something")
     obj.insert("something")
     obj.insert("somewhere")
@@ -379,7 +379,7 @@ def test_Trie():
     assert obj.get_words_by_prefix("some") == ['some', 'someone', 'somewhere', 'something']
     assert obj.get_words_by_prefix("some", unique_only=False) == ['some', 'someone', 'somewhere',
                                                                   'something', 'something']
-    assert obj.get_words_by_prefix("zoo") == []
+    assert obj.get_words_by_prefix("zoo") == [], "Test for get_words_by_prefix failed"
 
 
 def test_DisjointSets():
