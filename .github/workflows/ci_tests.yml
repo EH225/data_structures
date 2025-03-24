@@ -14,7 +14,7 @@ permissions:
 
 
 jobs:
-  continuous_integration_tests:
+  ci_test:
     runs-on: ubuntu-latest
 
     steps:
