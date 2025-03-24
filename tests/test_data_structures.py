@@ -343,21 +343,21 @@ def test_Trie():
     obj = Trie(words)
     obj.insert("another")
 
-    assert obj.get_word_count("is") == 1
+    assert obj.get_word_count("is") == 1, "Test for get_word_count failed"
 
     obj.insert("is")
-    assert obj.get_word_count("is") == 2
+    assert obj.get_word_count("is") == 2, "Test for get_word_count failed"
 
     obj.get_word_count("unknown")
-    assert obj.is_word("is") is True
+    assert obj.is_word("is") is True, "Test for is_word failed"
 
-    assert obj.is_word("something") is False
+    assert obj.is_word("something") is False, "Test for is_word failed"
     assert len(obj) == 15
 
-    assert obj.get_prefix_word_count("w") == 3
-    assert obj.is_prefix("wo") is True
-    assert obj.is_prefix("work") is True
-    assert obj.is_prefix("worked") is False
+    assert obj.get_prefix_word_count("w") == 3, "Test for get_prefix_word_count failed"
+    assert obj.is_prefix("wo") is True, "Test for is_prefix failed"
+    assert obj.is_prefix("work") is True, "Test for is_prefix failed"
+    assert obj.is_prefix("worked") is False, "Test for is_prefix failed"
 
     obj.remove_word("is")
     assert obj.get_word_count("is") == 1, "Test for get_word_count failed"
