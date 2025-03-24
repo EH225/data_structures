@@ -388,22 +388,22 @@ def test_DisjointSets():
     """
     obj = DisjointSets(10)
 
-    assert obj.find_root(5) == 5
+    assert obj.find_root(5) == 5, "Test for find_root failed"
 
     obj.join_sets(5, 6)
     obj.join_sets(1, 2)
-    assert obj.is_connected(1, 2) is True
-    assert obj.is_connected(5, 6) is True
-    assert obj.is_connected(1, 6) is False
+    assert obj.is_connected(1, 2) is True, "Test for is_connected failed"
+    assert obj.is_connected(5, 6) is True, "Test for is_connected failed"
+    assert obj.is_connected(1, 6) is False, "Test for is_connected failed"
 
     obj.join_sets(6, 2)
-    assert obj.is_connected(1, 6) is True
+    assert obj.is_connected(1, 6) is True, "Test for is_connected failed"
 
-    assert obj.get_sets() == [[0], [1, 2, 5, 6], [3], [4], [7], [8], [9]]
+    assert obj.get_sets() == [[0], [1, 2, 5, 6], [3], [4], [7], [8], [9]], "Test for get_sets failed"
 
     obj.join_sets(0, 2)
     obj.join_sets(2, 9)
-    assert obj.get_sets() == [[0, 1, 2, 5, 6, 9], [3], [4], [7], [8]]
+    assert obj.get_sets() == [[0, 1, 2, 5, 6, 9], [3], [4], [7], [8]], "Test for get_sets failed"
 
 
 def test_LFUCache():
