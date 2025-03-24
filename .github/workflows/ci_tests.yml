@@ -30,6 +30,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Test with pytest
+    - name: Test codebase with pytest
       run: |
-        pytest
+        python -m pytest
