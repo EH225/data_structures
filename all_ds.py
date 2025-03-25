@@ -7,7 +7,7 @@ from ds.linked_list import LinkedList, DoublyLinkedList
 from ds.heaps import MinHeap, MaxHeap
 from ds.deque import Deque
 from ds.binary_search_tree import BinarySearchTree
-from ds.binary_index_tree import BinaryIndexTree
+from ds.binary_indexed_tree import BinaryIndexedTree
 from ds.segment_tree import SegmentTree
 from ds.disjoint_sets import DisjointSets
 from ds.trie import Trie

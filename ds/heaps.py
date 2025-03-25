@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-Min and max heap data structures.
+Min and max heap data structures module, see help(MinHeap) and help(MaxHeap) for details.
 """
 
 
 class MinHeap:
     """
-    An implementation of a min-heap, code based on leetcode's template. Generally we would just use a list 
+    An implementation of a min-heap, code based on leetcode's template. Generally we would just use a list
     and python's heapq package instead. This data structure implements the methods of heap operations
     manually i.e. push and pop. For simplicity, one can push each element of a collection separately to
     heapify them in their entirety and add them to the data structure.
+
+    Min heaps are able to push and pop elements in O(log2(n)) time and give access to the min value in O(1)
+    time. This makes them useful when tracking the min element of a collection as elements are added and/or
+    removed.
     """
 
     def __init__(self):
@@ -33,7 +37,7 @@ class MinHeap:
         # before using these relationships.
 
         # Heapify by swapping elements until the parent nodes are all smaller than the child nodes
-        # This operation assumes that the rest of the nodes are already in an ordering that satisfies the 
+        # This operation assumes that the rest of the nodes are already in an ordering that satisfies the
         # heap property. If this newly added node is smaller than its parent node, then swap it with the
         # parent node and continue swimming the new x up the tree until that is no longer the case.
         while (self.heap[idx_x - 1] < self.heap[idx_parent - 1] and idx_x > 1):
@@ -104,7 +108,7 @@ class MinHeap:
 
     def top(self):
         """
-        Returns the element at the top of the heap without removing it.
+        Returns the element at the top of the heap without removing it i.e. the min.
         """
         return self.heap[0]
 
@@ -120,10 +124,14 @@ class MinHeap:
 
 class MaxHeap:
     """
-    An implementation of a max-heap, code based on leetcode's template. Generally we would just use a list 
+    An implementation of a max-heap, code based on leetcode's template. Generally we would just use a list
     and python's heapq package instead. This data structure implements the methods of heap operations
     manually i.e. push and pop. For simplicity, one can push each element of a collection separately to
     heapify them in their entirety and add them to the data structure.
+
+    Max heaps are able to push and pop elements in O(log2(n)) time and give access to the max value in O(1)
+    time. This makes them useful when tracking the max element of a collection as elements are added and/or
+    removed.
     """
 
     def __init__(self):
@@ -147,7 +155,7 @@ class MaxHeap:
         # before using these relationships.
 
         # Heapify by swapping elements until the parent nodes are all larger than the child nodes
-        # This operation assumes that the rest of the nodes are already in an ordering that satisfies the 
+        # This operation assumes that the rest of the nodes are already in an ordering that satisfies the
         # heap property. If this newly added node is larger than its parent node, then swap it with the
         # parent node and continue swimming the new x up the tree until that is no longer the case.
         while (self.heap[idx_x - 1] > self.heap[idx_parent - 1] and idx_x > 1):
@@ -218,7 +226,7 @@ class MaxHeap:
 
     def top(self):
         """
-        Returns the element at the top of the heap without removing it.
+        Returns the element at the top of the heap without removing it i.e. the max.
         """
         return self.heap[0]
 

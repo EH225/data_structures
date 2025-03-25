@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Segment tree data structure.
+Segment tree data structure module, see help(SegmentTree) for details.
 """
 
 import math
@@ -32,6 +32,18 @@ class SegmentTreeNode:
 class SegmentTree:
     """
     Segment tree data-structure.
+
+    Segment trees allow for range queries to be executed on an array in O(log2(n)) time which is much faster
+    than O(n) which is required to traverse the array element by element to evaluate. A range query is some
+    function e.g. sum, max, min etc. applied over a given range of elements of an array e.g. sum(arr[4:8]).
+
+    Segment trees also support making updates to elements in the array in O(log2(n)) time. This gives them
+    an advantage over prefix sums which require O(n) time to make updates to an arbitrary element in the
+    array. Segment trees also support the usage of monotonic, non-linear operators such as max and min which
+    prefix sumes do not.
+
+    Segment trees are well suited to handle a stream of range queries and array updates. They are less well
+    suited to handle insertions or deletions to the array, which requires a rebuild of the segment tree.
     """
 
     def __init__(self, arr: List[Union[int, float]], eval_func: str):
@@ -46,13 +58,14 @@ class SegmentTree:
             The function that will be evaluated over various ranges of arr in the segment tree.
             Must be one of the following: ["min", "max", "sum", "gcd", "lcm"]. Note, gcd and lcm are only
             appropriate if all values in arr are non-negative integers.
-        
+
         """
         # Record a dictionary of possible evaluation functions that can be applied over the elements of arr
         # Each expects 2 numbers as inputs and returns a number as an output after combining
         self.func_dict = {"min": min, "max": max, "sum": lambda x, y: x + y, "gcd": math.gcd, "lcm": math.lcm}
         self.eval_func, self.arr, self.seg_tree = None, None, None  # Initialize as None
         self.build_tree(arr, eval_func)  # Construct the segmentation tree using the input array and function
+        self.n = len(arr)  # Record the length of the internal array
 
     def build_tree(self, arr: List[Union[int, float]], eval_func: str) -> None:
         """
@@ -60,10 +73,10 @@ class SegmentTree:
         which will be computed over various segments of arr. This method is called when the SegmentTree object
         is instantiated and also again after certain other methods that make changes to the internal array
         (e.g. insert, pop).
-        
+
         This method can also be used to re-build the internal segment tree for a new input array or choice of
         evaluation function if desired by the user without creating a new instance of the SegmentTree class.
-        
+
         When this method is called, a copy of the input array and the evaluation function are saved as
         properties to this object in self.arr and self.eval_func respectively.
 
@@ -75,7 +88,7 @@ class SegmentTree:
             The function that will be evaluated over various ranges of arr in the segment tree.
             Must be one of the following: ["min", "max", "sum", "gcd", "lcm"]. Note, gcd and lcm are only
             appropriate if all values in arr are non-negative integers.
-        
+
         """
         assert len(arr) > 0 and isinstance(arr, list), "arr must be a non-empty python list"
         self.arr = arr.copy()  # Make a copy of the array to store internally
@@ -89,7 +102,7 @@ class SegmentTree:
     def _build_tree(self, start: int, end: int) -> Optional[SegmentTreeNode]:
         """
         Internal helper method that creates and returns a SegmentTreeNode root node.
-        
+
         Creates a segment tree for the elements of self.arr and a specified evaluation function
         (self.eval_func e.g. sum, max etc.). The segment tree is constructed by splitting arr into a left and
         right half and recursively calling this _build_tree helper method on the segments. At the bottom of
@@ -133,7 +146,7 @@ class SegmentTree:
         ----------
         val : Union[int, float]
             The new value to be appended to the end of the internal array.
-        
+
         """
         self.insert(self.n, val)
 
@@ -152,14 +165,14 @@ class SegmentTree:
             The new value to be inserted into the internal array.
 
         """
-        assert idx >= 0 and idx <= self.n, f"idx must be [0, {self.n}], got {idx}"
+        assert 0 <= idx <= self.n, f"idx must be [0, {self.n}], got {idx}"
         self.arr.insert(idx, val)  # Mirror the same change to the copy of arr stored internally
         self.build_tree(self.arr, self.eval_func)  # Rebuild the segment tree after the addition has been made
 
     def pop(self, idx: int = None) -> Union[int, float]:
         """
         Removes an element from the internal array at a specified index location and updates the segment tree
-        accordingly. Valid idx values are 0 through (self.n - 1). If idx=None (the default), then the 
+        accordingly. Valid idx values are 0 through (self.n - 1). If idx=None (the default), then the
         last element of the internal array will be popped and returned.
 
         Parameters
@@ -175,7 +188,7 @@ class SegmentTree:
 
         """
         idx = self.n - 1 if idx is None else idx  # Default to the last element if unspecified
-        assert idx >= 0 and idx <= self.n - 1, f"idx must be [0, {self.n - 1}], got {idx}"
+        assert 0 <= idx <= self.n - 1, f"idx must be [0, {self.n - 1}], got {idx}"
         ans = self.arr.pop(idx)  # Mirror the same change to the copy of arr stored internally
         self.build_tree(self.arr, self.eval_func)  # Rebuild the segment tree after the element was removed
         return ans  # Return the popped value from the internal array
@@ -238,9 +251,9 @@ class SegmentTree:
         root = self.seg_tree if root is None else root  # Default to the tree-root if not specified
         # Perform data validation on the interval endpoints requested
         msg = f"start must be an integer in the range [{root.start}, {root.end}], got {start}"
-        assert start >= root.start and start <= root.end, msg
+        assert root.start <= start <= root.end, msg
         msg = f"end must be an integer in the range [{root.start}, {root.end}], got {end}"
-        assert end >= root.start and end <= root.end, msg
+        assert root.start <= end <= root.end, msg
         assert start <= end, f"start must be <= end, got {start} and {end}"
 
         if start == root.start and end == root.end:  # Check if requested interval matches this node's bounds

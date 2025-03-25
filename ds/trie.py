@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Trie data structure.
+Trie data structure module, see help(Trie) for details.
 """
 
 from typing import Optional, List
@@ -10,7 +10,7 @@ class TrieNode:
     def __init__(self, n: int, n_prefix: int):
         self.n = n  # Record the number of words ending at this character (could be 0)
         self.n_prefix = n_prefix  # Record the number of words with this prefix (always >= 1 if not root)
-        self.children = {}
+        self.children = {}  # Maintain a dictionary of linkages to other TrieNodes organized by letter
 
 
 class Trie:
@@ -46,7 +46,7 @@ class Trie:
                 node.children[letter].n_prefix += 1  # Increment the prefix counter
             node = node.children[letter]  # Update for next iter, continue until we've covered all chr in word
 
-    def get_word_count(self, word: int) -> int:
+    def get_word_count(self, word: str) -> int:
         """
         Returns the number of instances of the input word that have been added to the Trie. The input word
         must be a non-empty string.
@@ -113,12 +113,12 @@ class Trie:
             node = next_node  # Update ref for next iteration
         node.n -= n_remove  # Decrement the terminal node word count by the number to remove
 
-    def first_prefix_word(self, word: str) -> str:
+    def first_prefix_word(self, word: str) -> Optional[str]:
         """
         Returns the first word found in the Trie along the node path leading to the input word provided.
         Note, the input word itself does not necessarily need to be a word in the Trie. The input word must
         be a non-empty string.
-        
+
         E.g. let word="apple". If "app" is a word in the Trie while "a" and "ap" are not, then "app" will be
         returned. If none of the proper prefixes of "apple" are in the Trie, but "apple" is, then "apple"
         will be returned. If "apple" and none of its prefixes are in the Trie, then None will be returned.

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Disjoint sets data structure utilizing the union find algorithm.
+Disjoint sets data structure utilizing the union find algorithm, see help(DisjointSets) for details.
 """
 from typing import List
 from collections import defaultdict
@@ -9,6 +9,7 @@ from collections import defaultdict
 class DisjointSets():
     """
     Data structure for handling n objects labeled 0 to (n-1) that are arranged in a series of disjoint set.
+    Handles finding the root represenative node and joining sets quickly and efficiently.
     """
 
     def __init__(self, n: int):
@@ -36,7 +37,7 @@ class DisjointSets():
 
     def join_sets(self, x: int, y: int) -> None:
         """
-        Joins the 2 disjoint sets together to which x and y belong. If x and y belong to the same set, 
+        Joins the 2 disjoint sets together to which x and y belong. If x and y belong to the same set,
         no action occurs. If they belong to different sets i.e. have different root nodes, then they
         are joined. The node belonging to the set that has a root with a lower rank is linked to the
         larger set root node.

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-LRU cache and LFU cache data structures.
+LRU cache and LFU cache data structures module, see help(LRUCache) and help(LFUCache) for details.
 """
 
+from typing import Optional
 from collections import defaultdict, OrderedDict
 
 
@@ -11,92 +12,121 @@ from collections import defaultdict, OrderedDict
 #################
 
 class ListNode:
-    def __init__(self, val, prev=None, next=None):
+    def __init__(self, val, prev_=None, next_=None):
         self.val = val
-        self.next = next
-        self.prev = prev
+        self.next_ = next_
+        self.prev_ = prev_
 
 
 class LRUCache:
     """
-    Least recently used cache (LFU) data structure. Caches elements and 
-    drops the one that was least recently used when out of space and adding
-    a new element.
-    
+    Least recently used cache (LFU) data structure. Caches elements and drops the one that was least recently
+    used when at capacity and adding a new element. This data structure helps cache values that may be useful
+    to have in memory later to prevent duplicative computations, while also limiting how much total memory
+    is used to retain prior results. Operates much like a dictionary but with a limited number of keys
+    retained.
+
     Great explination: https://www.romaglushko.com/blog/design-lru-cache/
     """
 
     def __init__(self, capacity: int):
         self.capacity = capacity  # How many keys in total may be stored
-        self.dict = {}  # A hashmap to quickly find data associated with
-        # each key
-        # Also store the head and tail of a double linked list that will
-        # be able to track our usage of different keys. When a key is used
-        # or added, it will be added to the tail and removed from the other
+        self.dict = {}  # A hashmap to quickly find data associated with each key
+        # Also store the head and tail of a double linked list that will be able to track our usage of
+        # different keys. When a key is used or added, it will be added to the tail and removed from the other
         # part of the list if it exists already
         self.head, self.tail = None, None
-        # When we want to add a new element and there are too many to add, we
-        # will drop the most element most distantly used, i.e. the head element
-        # and we will know what that is by keeping a pointer to the head of
-        # this linked list in memory
+        # When we want to add a new element and there are too many to add, we will drop the most element most
+        # distantly used, i.e. the head element and we will know what that is by keeping a pointer to the head
+        # of this linked list in memory
 
-    def get(self, key: int) -> int:
+    def get(self, key: int) -> Optional[int]:
         """
-        Returns the value associated with a key if it exists, and -1 otherwise.
+        Returns the value associated with a key if it exists, and None otherwise.
+
+        :param key: The lookup key of an element in the LRU cache.
+        :returns: The value associated with the key if found, otherwise returns None.
         """
-        val, node = self.dict.get(key, (-1, None))  # Attempt to retrieve val
+        val, node = self.dict.get(key, (None, None))  # Attempt to retrieve val
         if node is not None:  # Then this key does exist already, update the
             # internal linked list to reflect that it has been recently used
             self._update_usage(key)
         return val
 
     def _update_usage(self, key: int) -> None:
+        """
+        Internal helper method for updating the frequency of usage of a given key in the cache, incriments
+        up its usage by 1 so that the overall usage can be tracked for when it times comes to drop a least
+        recently used key.
+
+        :param key: The lookup key of an element in the LRU cache.
+        :returns: None, updates the internal usage recency usage associated with this key.
+        """
         node_pointer = self.dict[key][1]  # Get the node pointer of this key
         if node_pointer == self.tail:  # If this node is already the tail node
             return None  # then return None, nothing to update
         else:  # Move this existing node from where it currently is to the tail
             if node_pointer == self.head:  # If the head node, handle special case
                 # self.head != self.tail since the above condition was not met
-                self.head = self.head.next  # Move to the next node
-                self.head.prev = None  # Disconnect to make this the new head
+                self.head = self.head.next_  # Move to the next node
+                self.head.prev_ = None  # Disconnect to make this the new head
             else:  # If not the first node, nor the last, update pointers
                 # Link the prior node to the next node to skip over this node
-                node_pointer.prev.next = node_pointer.next
-                node_pointer.next.prev = node_pointer.prev
+                node_pointer.prev_.next_ = node_pointer.next_
+                node_pointer.next_.prev_ = node_pointer.prev_
             # Now add this removed node to the end as a new node
-            self.tail.next = node_pointer  # Move to the tail of the LL
-            node_pointer.prev = self.tail  # Link backwards
-            self.tail = self.tail.next  # Update the tail reference
-            self.tail.next = None  # Break the old next connection, the tail
-            # node should always have a .next pointing to None
-
-    def _add_new_key(self, key: int) -> None:
-        if self.tail is None:  # If no linked list currently
-            self.head = ListNode(val=key)
-            self.tail = self.head
-        else:  # If there is already a tail node, add the new node at the end
-            self.tail.next = ListNode(val=key, prev=self.tail)  # Add node
-            self.tail = self.tail.next  # Update tail pointer
+            self.tail.next_ = node_pointer  # Move to the tail of the LL
+            node_pointer.prev_ = self.tail  # Link backwards
+            self.tail = self.tail.next_  # Update the tail reference
+            self.tail.next_ = None  # Break the old next connection, the tail
+            # node should always have a .next_ pointing to None
 
     def put(self, key: int, value: int) -> None:
+        """
+        Adds a new key:value pair to the LRU cache or updates the value associated with key if key is
+        already an existing key:value pair in the cache,
+
+        :param key: aasda
+        :param value: adasda
+        :returns: None, adds the input data to the internal data structures.
+        """
         # If the key already exists, update the value already there
         if key in self.dict:
             self.dict[key][0] = value  # Edit the value of the key
             self._update_usage(key)  # Reflect that this key was recently used
 
         else:  # Otherwise if not already in the dict, add it
-            self._add_new_key(key)  # Add the new key to the recency linked list
+            # Add the new key to the recency linked list
+            if self.tail is None:  # If no linked list currently
+                self.head = ListNode(val=key)
+                self.tail = self.head
+            else:  # If there is already a tail node, add the new node at the end
+                self.tail.next_ = ListNode(val=key, prev_=self.tail)  # Add node
+                self.tail = self.tail.next_  # Update tail pointer
+
             self.dict[key] = [value, self.tail]  # Store both the value and node pointer
             # keys added are always added at the end and become the new tail node
 
             if len(self.dict) > self.capacity:  # Check if adding this new element
                 # puts us over the limit, ifso, drop the most distantly used element
                 drop_key = self.head.val  # The element used least recently
-                self.head = self.head.next  # Move the head to the next element, which
+                self.head = self.head.next_  # Move the head to the next element, which
                 # is guarenteed to exist since we just added a new node which put us
                 # over the limit which is >= 1
-                self.head.prev = None  # Drop the prior ref link
+                self.head.prev_ = None  # Drop the prior ref link
                 del self.dict[drop_key]  # Delete from the dictionary as well
+
+    def __setitem__(self, key: int, val: int) -> None:
+        """
+        Support for obj[idx] = val changes to the key:value pair.
+        """
+        self.put(key, val)
+
+    def __len__(self):
+        """
+        Returns the size of the cache i.e. how many element are currently stored.
+        """
+        return len(self.dict)
 
 
 #################
@@ -107,20 +137,40 @@ class LRUCache:
 class LFUCache:
     def __init__(self, capacity: int):
         """
-        Least frequently used cache (LFU) data structure. Caches elements and 
-        drops the one that was least frequently used when out of space and adding
-        a new element.
+        Least frequently used cache (LFU) data structure. Caches elements and drops the one that was least
+        frequently used when out of space and adding a new element.This data structure helps cache values that
+        may be useful to have in memory later to prevent duplicative computations, while also limiting how
+        much total memory is used to retain prior results. Operates much like a dictionary but with a limited
+        number of keys retained.
         """
         self.capacity = capacity  # The max number of elements allowed
         self.dict = {}  # Create a dict to hold the (key:(val, usage_count)) pairs
         self.freq_dict = defaultdict(OrderedDict)  # Create another dict to hold
-        # (usage_count:OrderedDict(key:None)) to organize the frequency of uasge 
+        # (usage_count:OrderedDict(key:None)) to organize the frequency of uasge
         # within each usage count bucket
         self.min_freq = None  # Keep track of the min usage frequency
 
+    def get(self, key: int) -> Optional[int]:
+        """
+        Returns the value associated with a key if it exists, and None otherwise.
+
+        :param key: The lookup key of an element in the LFU cache.
+        :returns: The value associated with the key if found, otherwise returns None.
+        """
+        val, usage_count = self.dict.get(key, (None, None))
+        if usage_count is not None:
+            # If the key does exist, update the usage_count
+            self._incriment_usage_count(key)
+        return val
+
     def _incriment_usage_count(self, key: int) -> None:
         """
-        Increments the usage_count of a particular key by 1.
+        Internal helper method that increments the usage_count of a particular lookup key by 1. Helpful for
+        tracking which key:value pairs are most often used so that when adding a new key:value pair when
+        already at capacity, it is known which one has been used least frequently and should be dropped.
+
+        :param key: The lookup key of an element in the LFU cache.
+        :returns: None, updates the internal usage frequency usage associated with this key.
         """
         val, usage_count = self.dict[key]
         del self.freq_dict[usage_count][key]  # Remove from the old dict
@@ -138,14 +188,15 @@ class LFUCache:
         # usage count dict to reflect the get action
         self.dict[key][1] = new_usage_count  # Update the usage count
 
-    def get(self, key: int) -> int:
-        val, usage_count = self.dict.get(key, (-1, None))
-        if usage_count is not None:
-            # If the key does exist, update the usage_count
-            self._incriment_usage_count(key)
-        return val
-
     def put(self, key: int, value: int) -> None:
+        """
+        Adds a new key:value pair to the LFU cache or updates the value associated with key if key is
+        already an existing key:value pair in the cache,
+
+        :param key: A new lookup key value.
+        :param value: A value associated with this lookup key to store.
+        :returns: None, adds the input data to the internal data structures.
+        """
         if key in self.dict:  # If this key already exists
             self.dict[key][0] = value  # Update the value associated with the key
             self._incriment_usage_count(key)  # Record a new usage instance for this key
@@ -162,7 +213,7 @@ class LFUCache:
                     break  # is also the least frequently used key in this bin
                 del self.freq_dict[self.min_freq][key]  # Remove key from bin
                 # Drop the least frequently used key among all keys that have been
-                # used min_freq number of times        
+                # used min_freq number of times
                 if len(self.freq_dict[self.min_freq]) == 0:  # If this freq dict is now empty
                     del self.freq_dict[self.min_freq]  # then drop it from the data structure
 
@@ -170,3 +221,15 @@ class LFUCache:
 
             self.min_freq = 1  # The smallest min_freq can ever be is 1 which is now the
             # new min since we've added a new element with a usage count of 1
+
+    def __setitem__(self, key: int, val: int) -> None:
+        """
+        Support for obj[idx] = val changes to the key:value pair.
+        """
+        self.put(key, val)
+
+    def __len__(self):
+        """
+        Returns the size of the cache i.e. how many element are currently stored.
+        """
+        return len(self.dict)

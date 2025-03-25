@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Deque data structure.
+Deque data structure module, see help(Deque) for details.
 """
 
 from typing import Optional
@@ -11,53 +11,62 @@ from typing import Optional
 #############
 
 class ListNode:
-    def __init__(self, val, prev=None, next=None):
-        # Use a doubly linked list
+    def __init__(self, val, prev_=None, next_=None):
+        """
+        Doubly linked list node data structure.
+        """
         self.val = val
-        self.prev = prev
-        self.next = next
+        self.prev_ = prev_
+        self.next_ = next_
 
 
 class Deque:
     """
-    A data structure that supports insertion and deletion at the front and back in O(n) time.
+    A data structure that supports insertion and deletion at the front and back in O(n) time. Uses a doubly
+    linked list internal data structure.
     """
 
     def __init__(self, k: int = 100):
-        self.k = k  # The max capacity of the queue
-        self.n = 0  # The number of elements in the queue
+        self.k = k  # The max capacity of the deque
+        self.n = 0  # The number of elements in the deque
         self.head = None  # The root of the linked list
         self.tail = None  # The end of the linked list
 
-    def appendLeft(self, value: int) -> None:
+    def append_left(self, value: int) -> None:
         """
-        Append a new element to the front of the dequeue if possible.
+        Appends a new element to the front of the deque if possible.
+
+        :param value: The value to be added to the front of the deque.
+        :returns: None, adds this new value to the data structure.
         """
         if self.n < self.k:  # Can only add if space available
             if self.n == 0:  # No nodes exist yet
                 self.head = ListNode(val=value)
                 self.tail = self.head  # Only 1 node, both are the same
             else:  # Otherwise add to the existing linked list
-                self.head.prev = ListNode(val=value, next=self.head)
-                self.head = self.head.prev
+                self.head.prev_ = ListNode(val=value, next_=self.head)
+                self.head = self.head.prev_
             self.n += 1
 
     def append(self, value: int) -> None:
         """
-        Append a new element to the end of the dequeue if possible.
+        Appends a new element to the end of the deque if possible.
+
+        :param value: The value to be added to the end of the deque.
+        :returns: None, adds this new value to the data structure.
         """
         if self.n < self.k:  # Can only add if space available
             if self.n == 0:  # No nodes exist yet
                 self.head = ListNode(val=value)
                 self.tail = self.head  # Only 1 node, both are the same
             else:  # Otherwise add to the existing linked list
-                self.tail.next = ListNode(val=value, prev=self.tail)
-                self.tail = self.tail.next
+                self.tail.next_ = ListNode(val=value, prev_=self.tail)
+                self.tail = self.tail.next_
             self.n += 1
 
-    def popLeft(self) -> Optional[int]:
+    def pop_left(self) -> Optional[int]:
         """
-        Remove the first element in the deque if possible and returns its value.
+        Removes the first element in the deque if possible and returns its value.
         """
         if self.n == 0:  # Nothing to delete
             return None
@@ -66,14 +75,14 @@ class Deque:
             if self.n == 1:  # Only 1 node
                 self.head, self.tail = None, None
             else:  # At least 2 nodes
-                self.head = self.head.next
-                self.head.prev = None
+                self.head = self.head.next_
+                self.head.prev_ = None
             self.n -= 1
             return return_val
 
     def pop(self) -> Optional[int]:
         """
-        Remove the last element in the deque if possible and returns its value.
+        Removes the last element in the deque if possible and returns its value.
         """
         if self.n == 0:  # Nothing to delete
             return None
@@ -82,50 +91,54 @@ class Deque:
             if self.n == 1:  # Only 1 node
                 self.head, self.tail = None, None
             else:  # At least 2 nodes
-                self.tail = self.tail.prev
-                self.tail.next = None
+                self.tail = self.tail.prev_
+                self.tail.next_ = None
             self.n -= 1
             return return_val
 
-    def getFront(self) -> int:
+    def get_front(self) -> int:
         """
         Return the element from the front of the deque or -1 if empty.
         """
         return self.head.val if self.n > 0 else -1
 
-    def getRear(self) -> int:
+    def get_rear(self) -> int:
         """
         Return the element from the rear of the deque or -1 if empty.
         """
         return self.tail.val if self.n > 0 else -1
 
-    def isEmpty(self) -> bool:
+    def is_empty(self) -> bool:
         """
         Return True if the deque is empty and False otherwise
         """
         return self.n == 0
 
-    def isFull(self) -> bool:
+    def is_full(self) -> bool:
         """
         Return True if the deque is full and False otherwise.
         """
         return self.n == self.k
 
     def __str__(self) -> str:
+        """
+        Returns a string representation of the deque.
+        """
         return self.__repr__()
 
     def __len__(self) -> int:
-        n = 0
-        node = self.head
-        while node is not None:
-            n += 1
-            node = node.next
-        return n
+        """
+        Returns the number of element currently in the deque.
+        """
+        return self.n
 
     def __repr__(self) -> str:
+        """
+        Returns a string representation of the deque.
+        """
         output = []
         node = self.head
         while node is not None:
             output.append(str(node.val))
-            node = node.next
+            node = node.next_
         return "[" + ", ".join(output) + "]"
