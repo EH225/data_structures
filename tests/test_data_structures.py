@@ -218,6 +218,8 @@ def test_SegmentTree():
     """
     test_data = [1, 2, 3, 5, 8, -10, 12]
     obj = SegmentTree(test_data, "sum")
+    assert obj._build_tree(4, 3) is None, "Empty segment returns no root test failed"
+    assert str(obj.seg_tree) == "[0, 6] 21", "Failed str representation test"
     assert len(obj) == len(test_data), "Failed len(obj) test"
     assert isinstance(str(obj), str), "Failed string representation test"
 
@@ -259,6 +261,7 @@ def test_BinarySearchTree():
     obj = BinarySearchTree()
     for x in list(range(30, 40)) + list(range(25)):
         obj.insert(x)
+        assert obj.isValidBST() is True
 
     assert len(obj) == 35, "Search for __len__ value check failed"
 
@@ -313,6 +316,45 @@ def test_BinarySearchTree():
     assert obj.find_first_le(obj.root.val) == obj.root.val, "find_first_le check failed"
     assert obj.find_first_ge(obj.root.val) == obj.root.val, "find_first_ge check failed"
     obj.print_tree()  # Should run without crashing
+
+
+
+    obj = BinarySearchTree()
+    assert obj.preOrderTraversal() == [], "Failed empty traversal test"
+    assert obj.inOrderTraversal() == [], "Failed empty traversal test"
+    assert obj.postOrderTraversal() == [], "Failed empty traversal test"
+    assert obj.levelOrderTraversal() == [], "Failed empty traversal test"
+    assert obj.isValidBST() is True, "Failed isValidBST empty tree test"
+    obj.delete(5) # Delete from a blank tree
+    assert obj.n == 0
+
+    obj.insert(5) # Add 1 element, then delete it
+    obj.delete(5) # Delete the root node
+    assert obj.n == 0 # Check that this ran and the size is recorded as 0
+
+    obj.insert(5) # Add the same element multiple times and make sure the valid BST check still passes
+    obj.insert(5)
+    obj.insert(4)
+    obj.insert(4)
+    obj.insert(0)
+    assert obj.isValidBST() is True, "Insertion of duplicate elements validation check failed"
+    obj.root.val = 50 # This will make the BST no longer valid
+    assert obj.isValidBST() is False, "Validation check failed to catch invalid BST"
+    obj.root.val = -50 # This will make the BST no longer valid
+    assert obj.isValidBST() is False, "Validation check failed to catch invalid BST"
+
+    obj = BinarySearchTree()
+    obj.insert(5)
+    obj.insert(10)
+    obj.delete(5)
+    assert obj.root.val == 10, "Root node deletion test failed"
+
+    obj = BinarySearchTree()
+    obj.insert(10)
+    obj.insert(15)
+    obj.insert(11)
+    obj.delete(15)
+    assert str(obj) == "[10, 11]", "Node deletion test failed"
 
 
 def test_Deque():

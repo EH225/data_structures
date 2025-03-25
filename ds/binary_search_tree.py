@@ -449,6 +449,9 @@ class BinarySearchTree:
 
         :returns: A bool indicating if the BST rooted at root is a valid BST.
         """
+        if self.root is None:
+            return True
+        # Recursively evaluate both branches to check that this BST is valid
         return self._DFS(self.root.left, None, self.root.val) and self._DFS(self.root.right,
                                                                             self.root.val, None)
 
@@ -465,18 +468,21 @@ class BinarySearchTree:
         """
         if node is None:  # If given a blank node, always return True, this is a base case
             return True
-        if high != None and node.val >= high:  # If there is an upper limit established for this tree
-            # check to make sure that this root node's value is not as large or greater, that would violate
-            # the properties of a BST
+
+        if high is not None and node.val > high:  # If there is an upper limit established for this tree
+            # check to make sure that this root node's value is not greater, that would violate the
+            # properties of a BST
             return False
-        if low != None and node.val <= low:  # If there is a lower bound limit established for this tree
-            # check to make sure that this root node's value is not as small or smaller, that would violate
-            # the properties of a BST
+
+        if low is not None and node.val < low:  # If there is a lower bound limit established for this tree
+            # check to make sure that this root node's value is not smaller, that would violate the properties
+            # of a BST
             return False
 
         if (node.right is None and node.left is None):  # Another base-case, a node with no children is always
             # a valid BST, this comes second since we need to use the above ifs to check that this is a valid
-            # child node of the prior parent node
+            # child node of the prior parent node first regardless of the decendents of this node.
+            # If this node is valid and there are no child nodes, then no further recursive calls needed
             return True
 
         # If both of those conditions are met, then this node is valid for the parent node above it
