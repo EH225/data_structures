@@ -1,4 +1,9 @@
-from all_ds import BinarySearchTree, BinaryIndexTree, Deque, DisjointSets, MinHeap, MaxHeap, LinkedList
+# -*- coding: utf-8 -*-
+"""
+Tests for all data structures contains in this repo.
+"""
+
+from all_ds import BinarySearchTree, BinaryIndexedTree, Deque, DisjointSets, MinHeap, MaxHeap, LinkedList
 from all_ds import DoublyLinkedList, SegmentTree, Trie, LRUCache, LFUCache
 import pytest
 
@@ -188,7 +193,7 @@ def test_BinaryIndexTree():
     Runs basic tests for the BinaryIndexTree data structure, tests methods and functionality.
     """
     test_data = [1, 2, 3, 5, 8, -10, 12]
-    obj = BinaryIndexTree(test_data)
+    obj = BinaryIndexedTree(test_data)
     assert len(obj) == len(test_data), "Failed len(obj) test"
     assert isinstance(str(obj), str), "Failed string representation test"
 

@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-Binary index tree data structure module, see help(BinaryIndexTree) for details.
+Binary indexed tree data structure module, see help(BinaryIndexedTree) for details.
 """
 
 from typing import Union, List
 
 
-class BinaryIndexTree:
+class BinaryIndexedTree:
     """
-    Binary Index Tree data-structure.
+    Binary Indexed Tree data-structure.
 
-    Also known as a Fenwick Tree, Binary Index Trees allow for evaluation of the sum function over a given
+    Also known as a Fenwick Tree, Binary Indexed Trees allow for evaluation of the sum function over a given
     range in an array in O(log2(n)) time. They also support updates to the values of the array in O(log2(n))
     time which is substantial improvement over O(n) update time required for updates in a prefix-sum.
 
     The binary representation of the array element's index is used for various purposes in constructing the
-    tree, making query evaluations, and updating values, hence the name Binary Index Tree.
+    tree, making query evaluations, and updating values, hence the name Binary Indexed Tree.
 
     See: https://www.youtube.com/watch?v=uSFzHCZ4E-8&t=12s for details.
     """
@@ -27,10 +27,10 @@ class BinaryIndexTree:
         Parameters
         ----------
         arr : List[Union[int, float]]
-            An input array of values for which the binary index tree is built.
+            An input array of values for which the binary indexed tree is built.
 
         """
-        # Construct the binary index tree
+        # Construct the binary indexed tree
         self.arr = arr.copy()  # Store a copy of the original array internally
         self.binary_idx_tree = arr.copy()  # Start off with a copy of the original input array
         for idx in range(1, len(self.binary_idx_tree) + 1):  # Use 1-indexing throughout
@@ -41,7 +41,7 @@ class BinaryIndexTree:
     def update(self, idx: int, val: Union[int, float]) -> None:
         """
         Updates the value of an element in the original array located at a particular index (idx) and also the
-        binary index tree accordingly. An update can also be accomplished with: binary_idx_tree[idx] = val.
+        binary indexed tree accordingly. An update can also be accomplished with: binary_idx_tree[idx] = val.
         Performs updates in O(log2(n)) time.
 
         Parameters
@@ -87,8 +87,8 @@ class BinaryIndexTree:
 
     def range_query(self, start: int, end: int) -> Union[float, int]:
         """
-        Performs a sum range query using the binary index tree and returns the aggregate answer. Computes the
-        sum of the array elements falling within the inclusive index interval [start, end] of the original
+        Performs a sum range query using the binary indexed tree and returns the aggregate answer. Computes
+        the sum of the array elements falling within the inclusive index interval [start, end] of the original
         array. Runs in O(log2(n)) time.
 
         Parameters
@@ -134,6 +134,6 @@ class BinaryIndexTree:
 
     def __len__(self):
         """
-        Returns the length of binary index tree.
+        Returns the length of binary indexed tree.
         """
         return len(self.binary_idx_tree)
