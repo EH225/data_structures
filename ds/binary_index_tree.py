@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Binary index tree data structure.
+Binary index tree data structure module, see help(BinaryIndexTree) for details.
 """
 
 from typing import Union, List
@@ -9,14 +9,14 @@ from typing import Union, List
 class BinaryIndexTree:
     """
     Binary Index Tree data-structure.
-    
+
     Also known as a Fenwick Tree, Binary Index Trees allow for evaluation of the sum function over a given
     range in an array in O(log2(n)) time. They also support updates to the values of the array in O(log2(n))
-    time which is substantial improvement over O(n) update time required for a prefix-sum.
-    
+    time which is substantial improvement over O(n) update time required for updates in a prefix-sum.
+
     The binary representation of the array element's index is used for various purposes in constructing the
     tree, making query evaluations, and updating values, hence the name Binary Index Tree.
-    
+
     See: https://www.youtube.com/watch?v=uSFzHCZ4E-8&t=12s for details.
     """
 
@@ -28,7 +28,7 @@ class BinaryIndexTree:
         ----------
         arr : List[Union[int, float]]
             An input array of values for which the binary index tree is built.
-        
+
         """
         # Construct the binary index tree
         self.arr = arr.copy()  # Store a copy of the original array internally
@@ -41,7 +41,8 @@ class BinaryIndexTree:
     def update(self, idx: int, val: Union[int, float]) -> None:
         """
         Updates the value of an element in the original array located at a particular index (idx) and also the
-        binary index tree accordingly. An update can also be accomplished with: binary_idx_tree[idx] = val
+        binary index tree accordingly. An update can also be accomplished with: binary_idx_tree[idx] = val.
+        Performs updates in O(log2(n)) time.
 
         Parameters
         ----------
@@ -63,22 +64,22 @@ class BinaryIndexTree:
     def _range_query(self, end: int) -> Union[float, int]:
         """
         Internal helper function for performing range queries. Computes the sum of all elements up through
-        index end. Is used by range_query to compute the sum of elements start:end by taking the sum through
-        end and subtracting off the sum through (start-1).
-        
+        index end. This method is used by range_query to compute the sum of elements start:end by taking the
+        sum through index=end and subtracting off the sum through index=(start-1). Runs in O(log2(n)) time.
+
         Parameters
         ----------
         end : int
             The ending index of the range query.
-        
+
         Returns
         -------
         Union[float, int]
             The evaluation of the range sum query from the first element through the end index element.
-        
+
         """
         end += 1  # Convert to 1-indexing
-        sum_total = 0  # Aggregate the sum total across all entries from the start up through idnex end
+        sum_total = 0  # Aggregate the sum total across all entries from the start, up through index end
         while end > 0:
             sum_total += self.binary_idx_tree[end - 1]
             end -= (end & -end)  # Flip the last set bit
@@ -87,7 +88,8 @@ class BinaryIndexTree:
     def range_query(self, start: int, end: int) -> Union[float, int]:
         """
         Performs a sum range query using the binary index tree and returns the aggregate answer. Computes the
-        sum [start, end] of the original array. 
+        sum of the array elements falling within the inclusive index interval [start, end] of the original
+        array. Runs in O(log2(n)) time.
 
         Parameters
         ----------
@@ -95,7 +97,7 @@ class BinaryIndexTree:
             The starting index of the range query.
         end : int
             The ending index of the range query.
-        
+
         Returns
         -------
         Union[float, int]

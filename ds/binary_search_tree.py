@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Binary search tree.
+Binary search tree data structure module, see help(BinarySearchTree) for details.
 """
 
 from typing import Union, Optional, List, Tuple, Iterable
@@ -12,6 +12,10 @@ from collections import deque
 ##########################
 
 class TreeNode:
+    """
+    Binary tree node object.
+    """
+
     def __init__(self, val, left=None, right=None):
         self.val = val
         self.left, self.right = left, right
@@ -19,7 +23,12 @@ class TreeNode:
 
 class BinarySearchTree:
     """
-    Binary search tree data-structure.
+    Binary search tree (BST) data-structure.
+
+    Binary search trees are good for quickly locating elements in a collection in O(log2(n)) time and being
+    able to also add and remove elements from the collection in O(log2(n)) time as well. They are also able
+    to quickly locate the min and max of a collection in O(log2(n)) time and also find the first element
+    greather than or less than a given value in O(log2(n)) time.
     """
 
     def __init__(self):
@@ -38,7 +47,7 @@ class BinarySearchTree:
 
     def _search(self, root: Optional[TreeNode], val: Union[int, float]) -> Optional[TreeNode]:
         """
-        Recursive helper function for locating a node with the value of val in the BST. Returns a 
+        Recursive helper function for locating a node with the value of val in the BST. Returns a
         pointer to the node with this value if it exists, otherwise None is returned.
 
         :param root: The root node of a BST through which to search for the node containing val.
@@ -69,7 +78,7 @@ class BinarySearchTree:
         self.root = self._insert(self.root, val)
         self.n += 1
 
-    def _insert(self, root: Optional[TreeNode], val: int) -> TreeNode:
+    def _insert(self, root: Optional[TreeNode], val: Union[int, float]) -> TreeNode:
         """
         Recursive helper function to insert a new value into the BST. Returns a TreeNode object
         i.e. the root of the new BST after insertion.
@@ -98,7 +107,7 @@ class BinarySearchTree:
             self.n -= 1
         self.root = self._delete(self.root, val)
 
-    def _delete(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+    def _delete(self, root: Optional[TreeNode], key: Union[int, float]) -> Optional[TreeNode]:
         """
         Recursive helper function for deleting a node from the BST.
 
@@ -160,7 +169,7 @@ class BinarySearchTree:
         return root
 
     def _treeSearch(self, root: Optional[TreeNode], prior_node: Optional[TreeNode],
-                    key: int) -> Tuple[Optional[TreeNode], Optional[TreeNode]]:
+                    key: Union[int, float]) -> Tuple[Optional[TreeNode], Optional[TreeNode]]:
         """
         Helper function that returns a pointer to the node that has a value equal to key and
         a pointer to the that node's parent. Returns None for either or both if they do not
@@ -170,8 +179,8 @@ class BinarySearchTree:
         :param root: The root node of an existing sub-tree or None.
         :param prior_node: The node prior to root, i.e. the parent of root or None if it has no parent.
         :param key: The key to locate in the BST.
-        :returns: Returns the node and its prior node as a tuple (in that order) if they exist or None
-            values instead within the tuple.
+        :returns: Returns pointers to a node and its prior node as a tuple (in that order) if they exist or
+            None values instead within the tuple.
         """
         if root is None or root.val == key:  # Base-case, when we either reach the node we
             # are looking for or a None ending indicating that it does not exist
@@ -185,7 +194,7 @@ class BinarySearchTree:
 
     def inorderSuccessor(self, root: TreeNode, p: TreeNode) -> Optional[TreeNode]:
         """
-        To return the in-order successor of p, we will need to handle things in a few
+        To return the in-order successor of some node p, we will need to handle things in a few
         different cases:
             1). If node p has a right child, then we want to get the left-most child
                 of that right successor. A right child means that there is a value larger
@@ -230,9 +239,12 @@ class BinarySearchTree:
         """
         self.root = self._balanced_BST(self.inOrderTraversal())
 
-    def _balanced_BST(self, inOrderNodeList: list) -> Optional[TreeNode]:
+    def _balanced_BST(self, inOrderNodeList: List[Union[int, float]]) -> Optional[TreeNode]:
         """
         Helper function that returns a height-balanced BST built off an in-order node traversal.
+
+        :param inOrderNodeList: A list of node values from an in-order traversal of the tree.
+        :returns: The root of a newly balanced BST using the same nodes that were provided as inputs.
         """
         if len(inOrderNodeList) == 0:  # Recursion base-case
             return None
@@ -250,16 +262,17 @@ class BinarySearchTree:
         Finds the first value in the BST that is less than or equal to a given input value.
         Returns None if there is no value that is less than or equal to the value provided.
 
-        :param val: The value that is a ceiling for the largest element to returns from the tree.
+        :param val: The value that is a ceiling for the largest element to return from the tree.
         :returns: Returns the largest value in the BST that is less than or equal to val.
         """
         return self._find_le(self.root, val)
 
-    def _find_le(self, root: Optional[TreeNode], val: int) -> Optional[Union[int, float]]:
+    def _find_le(self, root: Optional[TreeNode], val: Union[int, float]) -> Optional[Union[int, float]]:
         """
         Recursive helper function for finding the largest value in the BST that is less than or
         equal to the input val.
 
+        :param root: The root node of an existing sub-tree.
         :param val: The value that is a ceiling for the largest element to returns from the tree.
         :returns: Returns the largest value in the BST that is less than or equal to val.
         """
@@ -281,7 +294,7 @@ class BinarySearchTree:
                 # the lower bound i.e. the largest value in the tree <= val
                 return max(root.val, right_le)
 
-    def find_first_ge(self, val: Optional[Union[int, float]]) -> Optional[Union[int, float]]:
+    def find_first_ge(self, val: Union[int, float]) -> Optional[Union[int, float]]:
         """
         Finds the first value in the BST that is greater than or equal to a given input value.
         Returns None if there is no value that is greater than or equal to the value provided.
@@ -291,11 +304,12 @@ class BinarySearchTree:
         """
         return self._find_ge(self.root, val)
 
-    def _find_ge(self, root: Optional[TreeNode], val: int) -> Optional[Union[int, float]]:
+    def _find_ge(self, root: Optional[TreeNode], val: Union[int, float]) -> Optional[Union[int, float]]:
         """
         Recursive helper function for finding the smallest value in the BST that is greater than or
         equal to the input val.
 
+        :param root: The root node of an existing sub-tree.
         :param val: The value that is a floor for the smallest element to returns from the tree.
         :returns: Returns the smallest value in the BST that is greater than or equal to val.
         """
@@ -317,7 +331,8 @@ class BinarySearchTree:
                 # the upper bound i.e. the smallest value in the tree >= val
                 return min(root.val, left_ge)
 
-    def preOrderTraversal(self, root: Optional[TreeNode] = 0, return_vals: bool = True) -> list:
+    def preOrderTraversal(self, root: Optional[TreeNode] = 0,
+                          return_vals: bool = True) -> List[Union[int, float]]:
         """
         Returns the pre-order traversal of the BST nodes: [root, left, right]
 
@@ -336,7 +351,8 @@ class BinarySearchTree:
             nodes.extend(self.preOrderTraversal(root.right, return_vals))
             return nodes
 
-    def inOrderTraversal(self, root: Optional[TreeNode] = 0, return_vals: bool = True) -> list:
+    def inOrderTraversal(self, root: Optional[TreeNode] = 0,
+                         return_vals: bool = True) -> List[Union[int, float]]:
         """
         Returns the in-order traversal of the BST nodes: [left, root, right]
 
@@ -359,7 +375,8 @@ class BinarySearchTree:
             nodes.extend(self.inOrderTraversal(root.right, return_vals))
             return nodes
 
-    def postOrderTraversal(self, root: Optional[TreeNode] = 0, return_vals: bool = True) -> list:
+    def postOrderTraversal(self, root: Optional[TreeNode] = 0,
+                           return_vals: bool = True) -> List[Union[int, float]]:
         """
         Returns the post-order traversal of the BST nodes: [left, right, root]
 
@@ -382,7 +399,7 @@ class BinarySearchTree:
             return nodes
 
     def levelOrderTraversal(self, root: Optional[TreeNode] = 0, return_vals: bool = True,
-                            return_levels: bool = False) -> list:
+                            return_levels: bool = False) -> List[Union[int, float]]:
         """
         Returns the level-order traversal of the BST nodes as a list or list of lists.
 
@@ -429,17 +446,18 @@ class BinarySearchTree:
         Operates by recursively calling a DFS helper function on the left and right child nodes where
         root.val is provided to the left-subtree as the max and root.val is provided to the right-subtree as
         the min value.
-        
+
         :returns: A bool indicating if the BST rooted at root is a valid BST.
         """
         return self._DFS(self.root.left, None, self.root.val) and self._DFS(self.root.right,
                                                                             self.root.val, None)
 
-    def _DFS(self, node: Optional[TreeNode], low: Optional[int], high: Optional[int]) -> bool:
+    def _DFS(self, node: Optional[TreeNode], low: Optional[Union[int, float]],
+             high: Optional[Union[int, float]]) -> bool:
         """
         Helper function for isValidBST that checks if the tree with root as the root node is a valid BST
         based on the input low and high values provided.
-        
+
         :param node: The root of this subtree to be evaluated if it is a valid BST.
         :param low: The min value we should find in this subtree i.e. all values must be >= low.
         :param high: The max value we should find in this subtree i.e. all values must be <= high.
@@ -487,7 +505,7 @@ class BinarySearchTree:
         Recursive helper function that returns the max depth of the tree rooted at root. Runs on the self.root
         internal BST if root is left as the default value of 0. A tree with only a root is defined to have a
         depth of 1. A tree with no nodes is defined to have a depth of 0.
-        
+
         :param root: The root node of a BST. If set to 0, this method operates on the entire BST.
         :returns: An integer value denoting the max depth of the tree along all of its branches.
         """
@@ -510,7 +528,7 @@ class BinarySearchTree:
             """
             Helper function that checks if any entry in input_list is a numerical value. Returns True if any
             element of input_list is either an int or float type value.
-            
+
             :param input_list: An input list of elements, could be of mixed type.
             :returns: A bool indicating if there is at least 1 element that is an int or float date type.
             """
@@ -526,15 +544,15 @@ class BinarySearchTree:
             print(f"Tree depth is too large ({max_depth} > 10) to print, try running .rebalance() first to "
                   "reduce the depth.")
             return None
-        # Create a list of lists where each inner list is a row in the output print string. We will be 
-        # including additional characters to draw the branches between values so we'll need more than just 
-        # width number of place holders. Each column of vals is separated from others internally by a column 
-        # to hold the branches so we need max_depth cols for the vals + (max_depth - 1) cols for the branching 
+        # Create a list of lists where each inner list is a row in the output print string. We will be
+        # including additional characters to draw the branches between values so we'll need more than just
+        # width number of place holders. Each column of vals is separated from others internally by a column
+        # to hold the branches so we need max_depth cols for the vals + (max_depth - 1) cols for the branching
         # between. Similarly, for the rows, between 2 child nodes, we will want to have at least 1 space so
         # we'll need width*2 - 1 places
         print_str = [["   " for j in range(max_depth * 2 - 1)] for i in range(width)]
         node_stack = [(self.root, (width // 2, 0), width)]  # (node, (x, y), width), root begins at mid-x, y=0
-        # The width of the tree where this node is at the center is important for computing the dist of the 
+        # The width of the tree where this node is at the center is important for computing the dist of the
         # child nodes up and down from the current one. It is 1 + width // 2 = row diff to child nodes
         # Traverse the tree using DFS and fill in values and branch characters as we go
         while node_stack:  # Iterate until we've visited all nodes
@@ -553,8 +571,8 @@ class BinarySearchTree:
             # No branch characters added if this node has no children
 
             offset = w // 2 // 2 + 1  # Find the row offset size from this current node's x to the child nodes
-            # we take the width of the tree that the current node sits in the middle of, split it in half to 
-            # get the width of each left and right size, then take half of that to the midpoint within each 
+            # we take the width of the tree that the current node sits in the middle of, split it in half to
+            # get the width of each left and right size, then take half of that to the midpoint within each
             # half and add 1 since we need to move from the mid row of this width to one of the halfs and that
             # takes 1 step
 
