@@ -22,18 +22,39 @@ def test_LinkedList():
     with pytest.raises(IndexError):  # Test updating a node at a non-existant index
             obj[10] = 5
 
+    with pytest.raises(IndexError):  # Test popping from an empty list
+        obj.pop()
+
     obj.insert(0, 5)
+    with pytest.raises(IndexError):  # Test popping from out of range
+        obj.pop(5)
+
     assert obj.pop(0) == 5, "Test for pop failed"
     assert len(obj) == 0, "Pop from size 1 list test failed"
 
     assert str(obj) == "[]", "Test for str representation of linked list failed"
     for x in test_data:
-        obj.insert(len(obj), x)
+        obj.append(x)
+
+    with pytest.raises(IndexError):  # Test the index method on a value that doesn't exist
+        obj.index(20)
 
     assert len(obj) == len(test_data), "len comparison test failed"
     assert str(test_data) == str(obj), "str representation comparison test failed"
-    for a, b in zip(test_data, obj):
+    assert obj.head.val == test_data[0], "Test for obj.head failed"
+    assert obj.tail.val == test_data[-1], "Test for obj.tail failed"
+    for idx, (a, b) in enumerate(zip(test_data, obj)):
         assert a == b.val
+        assert obj.index(a) == idx
+
+    obj.reverse() # Reverse the order of the elements and run tests
+    assert obj.head.val == test_data[-1], "Test for obj.head failed"
+    assert obj.tail.val == test_data[0], "Test for obj.tail failed"
+    for idx, (a, b) in enumerate(zip(test_data[::-1], obj)):
+        assert a == b.val
+        assert obj.index(a) == idx
+
+    obj.reverse()
 
     obj.insert(len(obj), 10)
     assert obj[-1].val == 10, "Test for insert failed"
@@ -78,60 +99,88 @@ def test_DoublyLinkedList():
     test_data = [1, 5, 8, 7]
     obj = DoublyLinkedList()
 
-    with pytest.raises(KeyError):  # Test indexing out of range
+    with pytest.raises(IndexError):  # Test indexing out of range
         obj[7]
 
-    obj.addAtHead(5)
-    obj.deleteAtIndex(0)
-    assert len(obj) == 0, "delete from size 1 list test failed"
+    with pytest.raises(IndexError):  # Test inserting out of range
+        obj.insert(5, 20)
 
-    assert str(obj) == "[]"
+    with pytest.raises(ValueError):  # Test inserting without providing a value
+            obj.insert(5)
+
+    with pytest.raises(IndexError):  # Test updating a node at a non-existant index
+            obj[10] = 5
+
+    with pytest.raises(IndexError):  # Test popping from an empty list
+        obj.pop()
+
+    obj.insert(0, 5)
+    with pytest.raises(IndexError):  # Test popping from out of range
+        obj.pop(5)
+
+    assert obj.pop(0) == 5, "Test for pop failed"
+    assert len(obj) == 0, "Pop from size 1 list test failed"
+
+    assert str(obj) == "[]", "Test for str representation of linked list failed"
     for x in test_data:
-        obj.addAtTail(x)
+        obj.append(x)
+
+    with pytest.raises(IndexError):  # Test the index method on a value that doesn't exist
+        obj.index(20)
 
     assert len(obj) == len(test_data), "len comparison test failed"
     assert str(test_data) == str(obj), "str representation comparison test failed"
-    for a, b in zip(test_data, obj):
+    assert obj.head.val == test_data[0], "Test for obj.head failed"
+    assert obj.tail.val == test_data[-1], "Test for obj.tail failed"
+    for idx, (a, b) in enumerate(zip(test_data, obj)):
         assert a == b.val
+        assert obj.index(a) == idx
 
-    # assert test_data == [x.val for x in obj], "values iteration test failed"
+    obj.reverse() # Reverse the order of the elements and run tests
+    assert obj.head.val == test_data[-1], "Test for obj.head failed"
+    assert obj.tail.val == test_data[0], "Test for obj.tail failed"
+    for idx, (a, b) in enumerate(zip(test_data[::-1], obj)):
+        assert a == b.val
+        assert obj.index(a) == idx
 
-    assert obj.head.val == 1, "head test failed"
-    assert obj.tail.val == 7, "tail test failed"
+    obj.reverse()
 
-    for i in range(1, len(obj)):
-        assert obj[i].prev_.val == test_data[i - 1]
+    obj.insert(len(obj), 10)
+    assert obj[-1].val == 10, "Test for insert failed"
 
-    obj.addAtTail(10)
-    assert obj[-1].val == 10, "Test for addAtTail failed"
+    obj.insert(0, -15)
+    assert obj[0].val == -15, "Test for insert failed"
 
-    obj.addAtHead(-15)
-    assert obj[0].val == -15, "Test for addAtHead failed"
-
-    obj.addAtIndex(3, 845315)
-    assert obj[3].val == 845315, "Test for addAtIndex failed"
+    obj.insert(3, 845315)
+    assert obj[3].val == 845315, "Test for insert failed"
 
     val = obj[4].val
-    obj.deleteAtIndex(3)
-    assert obj[3].val == val, "Test for deleteAtIndex failed"
+    assert obj[3].val == obj.pop(3), "Test for pop failed"
+    assert obj[3].val == val, "Test for pop at index failed"
 
     obj = DoublyLinkedList()
-    obj.addAtHead(15)
-    assert obj.head.val == 15, "Test for addAtHead empty list failed"
+    obj.insert(None, 15)
+    assert obj.head.val == 15, "Test for insert in empty list failed"
 
-    obj.addAtIndex(len(obj), 6)
-    assert obj[-1].val == 6, "Test for addAtIndex at index n failed"
+    obj.insert(len(obj), 6)
+    assert obj[-1].val == 6, "Test for insert at index n failed"
 
-    obj.addAtIndex(0, 14)
-    assert obj[0].val == 14, "Test for addAtIndex at 0 failed"
+    obj.insert(0, 14)
+    assert obj[0].val == 14, "Test for insert at 0 failed"
 
     val = obj[-2].val
-    obj.deleteAtIndex(len(obj) - 1)
-    assert obj.tail.val == val, "Test for deleteAtIndex at index n failed"
+    obj.pop(len(obj) - 1)
+    assert obj.tail.val == val, "Test for pop at index n-1 failed"
 
     val = obj[1].val
-    obj.deleteAtIndex(0)
-    assert obj.head.val == val, "Test for deleteAtIndex for index 0 failed "
+    assert obj[0].val == obj.pop(0), "Test pop for index 0 failed "
+    assert obj.head.val == val, "Test pop for index 0 failed "
+
+    obj.insert(1, 50)
+    obj.insert(2, 70)
+    obj.insert(3, 80)
+    obj[1] = 5
+    assert obj[1].val == 5, "Test for set item failed"
 
 
 def test_BinaryIndexTree():

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Singly and doubly linked-lists.
+Singly and doubly linked-lists data structures module, see help(LinkedList) and help(DoublyLinkedList) for
+details.
 """
 
 from typing import Union, Optional, List, Tuple, Iterable
@@ -31,7 +32,7 @@ class LinkedList:
         self.tail = None  # Maintain a reference to the last node
         self.n = 0  # Record the total number of elements in the list
 
-    def _get(self, index: int, return_prev: bool = False) -> Union[Optional[ListNode], Tuple[ListNode]]:
+    def _get(self, index: int) -> Tuple[Optional[ListNode], Optional[ListNode]]:
         """
         Internal helper function for the get method. Returns the node located at index within the linked
         list or None if the index is out of range. Returns the node prior to the one at the given index if
@@ -45,12 +46,12 @@ class LinkedList:
             None. If return_prev is True, then a tuple of None or ListNode1 objects are returned.
         """
         if index < 0 or index >= self.n:  # Check for invalid indices
-            return (None, None) if return_prev is True else None
+            return None, None
         else:  # Locate the element requested by traversing the list
             prev_node, node = None, self.head
             for i in range(index):
                 prev_node, node = node, node.next_
-            return (prev_node, node) if return_prev is True else node
+            return prev_node, node
 
     def get(self, index: int, return_value: bool = True) -> Optional[Union[ListNode, int]]:
         """
@@ -60,7 +61,7 @@ class LinkedList:
         :param return_value: Whether to return the value of the node or the node itself. The default is True.
         :returns: The value associated with a node or a pointer to the node itself at the index.
         """
-        node = self._get(index, return_prev=False)
+        prev_node, node = self._get(index)
         if node is None:
             return None
         else:
@@ -91,50 +92,107 @@ class LinkedList:
                 self.head, self.tail = new_node, new_node
             else:  # If we already have a head node, insert prior
                 self.head = ListNode(val=val, next_=self.head)
-            self.n += 1  # Update length of list counter
 
         elif index == self.n:  # Insert at the end, append a new node to the tail
-           # If the length of the list is 0, then insertion will be at index 0 and handled above, otherwise
-           # the length will be >= 1 so there must already be a tail node present
-           self.tail.next_ = ListNode(val=val)  # Add a new tail node
-           self.tail = self.tail.next_  # This new node is now the last node
-           self.n += 1  # Update length of list counter
+            # If the length of the list is 0, then insertion will be at index 0 and handled above, otherwise
+            # the length will be >= 1 so there must already be a tail node present
+            self.tail.next_ = ListNode(val=val)  # Add a new tail node
+            self.tail = self.tail.next_  # This new node is now the last node
 
         else:  # Otherwise insert the new node at an index somewhere internally, between the head and tail
-            # Attempt to get this node from the list and it's predessor
-            prev_node, node = self._get(index, return_prev=True)
-            if node is not None:  # If index was valid, operate on the returned node
-                new_node = ListNode(val=val, next_=node)
-                prev_node.next_ = new_node
-                self.n += 1  # Update length of list counter
+            # Attempt to get this node from the list and its predecessor
+            prev_node, node = self._get(index)
+            new_node = ListNode(val=val, next_=node)
+            prev_node.next_ = new_node
 
-    def pop(self, index: int) -> Optional[int]:
+        self.n += 1  # Update length of list counter
+
+    def append(self, val: int) -> None:
+        """
+        In-place method for appending a new value to the end of the linked list. This method is the same as
+        using obj.insert(len(obj), val).
+
+        :param val: The value to be added to the end of the linked list.
+        :returns: None, adds a new node to the data structure.
+        """
+        self.insert(self.n, val)
+
+    def pop(self, index: int = None) -> int:
         """
         In-place method for deleting a node located at a particular index in the linked list and returning
-        the value associated. Performs the operation if possible, does nothing if not the index is not valid.
+        the associated value. If index is left as None (not provided), the default behavior will be to pop
+        from the end of the list. If the index provided is not valid, an IndexError is raised.
 
         :param index: An integer denoting the location of the node to be deleted. Must be [0, n-1].
-        :returns: The associated value if possiable for this node to be removed.
+        :returns: The associated value if possible for this node to be removed.
         """
-        prev_node, node = self._get(index, return_prev=True)
-        if node is not None:  # If index was valid, operate on the returned node
-            ans = node.val  # Make note of what value this is before removing the node
-            if self.n == 1:  # Remove the only node in the linked list
-                self.head, self.tail = None, None
-            else:  # Then there are at least 2 nodes in the linked list, we will
-                # have either a prev or next node or both
-                next_node = node.next_
-                if prev_node is None:  # Delete the first element in the list
-                    self.head = node.next_  # Move head ref to next element
-                elif next_node is None:  # Delete the last element in the list
-                    self.tail = prev_node  # Move the tail ref back 1 element
-                    self.tail.next_ = None  # Remove forward ref at new tail
-                else:  # Delete some middle element in the linked list
-                    prev_node.next_ = next_node
-            self.n -= 1  # Update length of list counter
-            return ans
+        if self.n == 0:
+            raise IndexError("Cannot pop from an empty list")
+
+        index = self.n - 1 if index is None else index
+        prev_node, node = self._get(index)
+        if node is None:
+            raise IndexError(f"Index={index} is out of range")
+
+        ans = node.val  # Make note of what value this is before removing the node
+        if self.n == 1:  # Remove the only node in the linked list
+            self.head, self.tail = None, None
+
+        else:  # Then there are at least 2 nodes in the linked list, we will
+            # have either a prev or next node or both
+            next_node = node.next_
+            if prev_node is None:  # Delete the first element in the list
+                self.head = node.next_  # Move head ref to next element
+            elif next_node is None:  # Delete the last element in the list
+                self.tail = prev_node  # Move the tail ref back 1 element
+                self.tail.next_ = None  # Remove forward ref at new tail
+            else:  # Delete some middle element in the linked list
+                prev_node.next_ = next_node
+
+        self.n -= 1  # Update length of list counter
+        return ans
+
+    def index(self, val: int) -> int:
+        """
+        Returns the first index where a given input value occurs in the linked list. If the provided value
+        cannot be found, an index error is raised.
+        """
+        idx = 0  # Track the index of the node as the linked list is traversed
+        node = self.head  # Begin with the head node
+        while node is not None:  # Iterate until we reach the tail
+            if node.val == val:  # Check if the target value is matched, if so return the index of occurence
+                return idx
+            else:  # Otherwise move to the next node and keep searching
+                node = node.next_
+                idx += 1
+        raise IndexError(f"Could not locate {val} in linked list")
+
+    def reverse(self) -> None:
+        """
+        In-place method that reverses the order of elements stored in the linked list.
+        """
+        if self.n > 1:  # Only need to take action if there is more than 1 node in the linked list
+            stack = []  # Use a stack to perform a LIFO traversal of the nodes
+            node = self.head
+
+            while node is not None:
+                stack.append(node)
+                node = node.next_
+
+            self.head = stack.pop()  # The old tail becomes the new head
+            last_node = self.head  # Keep track of the prior node so that we can add the next_ linkage
+            while stack:
+                node = stack.pop()
+                last_node.next_ = node
+                last_node = node  # Update ref for next iteration
+
+            node.next_ = None  # The new tail node is the old head node, set the next_ pointer to None
+            self.tail = node  # Update the pointer to the tail node
 
     def __len__(self) -> int:
+        """
+        Returns the length of the linked list.
+        """
         return self.n
 
     def __getitem__(self, index: int) -> ListNode:
@@ -235,9 +293,9 @@ class DoublyLinkedList:
         if index < 0 or index >= self.n:  # Check for invalid indices
             return None
         else:  # Locate the element requested by traversing the list
-            # We can find it quickest by iterating from the side that
-            # the index is closest to i.e. either the head or tail
-            if index + 1 < self.n / 2:  # The index is in the first half
+            # We can find it faster by iterating from the side that the index is closest to
+            # # i.e. either the head or tail and moving inwards
+            if index + 1 <= self.n // 2:  # The index is in the first half
                 node = self.head  # Start from the head and move right
                 for i in range(index):
                     node = node.next_
@@ -261,88 +319,127 @@ class DoublyLinkedList:
         else:
             return node.val if return_value is True else node
 
-    def addAtHead(self, val) -> None:
+    def insert(self, index: int = None, val: int = None) -> None:
         """
-        In-place method for adding a new node with val as the associated value to the linked list at the head
-        which becomes the new head node.
+        In-place method for adding a new node with a value of val at a given index in the linked list.
 
-        :param val: A value to be added to the linked list.
-        :returns: None.
-        """
-        if self.head is None:  # No elements currently in the list
-            new_node = DoublyListNode(val=val)  # Create a new node
-            self.head, self.tail = new_node, new_node
-        else:  # If we already have a head node, insert prior
-            new_node = DoublyListNode(val=val, next_=self.head)
-            self.head.prev_ = new_node  # Link back to the new node
-            self.head = new_node  # This new node is now the first node
-        self.n += 1  # Update length of list counter
+        If index == 0, then the new node will be added at the head. If index == n or None, then the new node
+        will be added at the end of the list. The new node will become the node at the index provided.
 
-    def addAtTail(self, val) -> None:
+        :param val: The value to be added to the linked list.
+        :param index: The index where the new value should be inserted, the default is None, which will result
+            in the new node being appended to the end.
+        :returns: None, adds a new node to the data structure.
         """
-        In-place method for adding a new node with val as the associated value to the linked list at the
-        tail which becomes the new tail node.
+        if val is None:
+            raise ValueError("val must not be None")
 
-        :param val: A value to be added to the linked list.
-        :returns: None.
-        """
-        if self.tail is None:  # No elements currently in the list
-            new_node = DoublyListNode(val=val)  # Create a new node
-            self.head, self.tail = new_node, new_node
-        else:  # If we already have a tail node, insert at the end
+        index = self.n if index is None else index
+        if index < 0 or index > self.n:
+            raise IndexError(f"Index={index} out of range")
+
+        if index == 0:  # Then insert before the head node, create a new head node with this value
+            if self.head is None:  # No elements currently in the list
+                new_node = DoublyListNode(val=val)  # Create a new node
+                self.head, self.tail = new_node, new_node
+            else:  # If we already have a head node, insert prior
+                new_node = DoublyListNode(val=val, next_=self.head)
+                self.head.prev_ = new_node  # Link back to the new node
+                self.head = new_node  # This new node is now the first node
+
+        elif index == self.n:  # Insert at the end, append a new node to the tail
+            # If the length of the list is 0, then insertion will be at index 0 and handled above, otherwise
+            # the length will be >= 1 so there must already be a tail node present
             new_node = DoublyListNode(val=val, prev_=self.tail)
             self.tail.next_ = new_node  # Link ahead to the new node
             self.tail = new_node  # This new node is now the last node
+
+        else:  # Otherwise insert the new node at an index somewhere internally, between the head and tail
+            # Attempt to get this node from the list and its predecessor
+            node = self._get(index)  # Get a pointer to the node currently at this index in the list
+            prev_node = node.prev_
+            new_node = DoublyListNode(val=val, next_=node, prev_=prev_node)
+            prev_node.next_, node.prev_ = new_node, new_node
+
         self.n += 1  # Update length of list counter
 
-    def addAtIndex(self, index: int, val) -> None:
+    def append(self, val: int) -> None:
         """
-        In-place method for adding a new node with val as the associated value to the linked list at the
-        location described by index. The new node will become the node at the index provided.
+        In-place method for appending a new value to the end of the linked list. This method is the same as
+        using obj.insert(len(obj), val).
 
-        :param index: An integer index value denoting the location in the linked list to add a new
-            element. An index of 0 is equlivalent to calling addAtHead.
-        :param val: A value to be added to the linked list.
-        :returns: None.
+        :param val: The value to be added to the end of the linked list.
+        :returns: None, adds a new node to the data structure.
         """
-        if index == self.n:  # If index is 1 beyond the valid range of indices
-            self.addAtTail(val)  # Append the new node to the tail
-        elif index == 0:  # Append at the head if index is 0
-            self.addAtHead(val)
-        else:  # Otherwise, insert before the node located at index
-            node = self._get(index)  # Attempt to get this node from the list
-            if node is not None:  # If index was valid, operate on the returned node
-                prev_node = node.prev_
-                new_node = DoublyListNode(val=val, next_=node, prev_=prev_node)
-                prev_node.next_, node.prev_ = new_node, new_node
-                self.n += 1  # Update length of list counter
+        self.insert(self.n, val)
 
-    def deleteAtIndex(self, index: int) -> None:
+    def pop(self, index: int = None) -> int:
         """
-        In-place method for deleting a node located at a particular index in the linked list. Performs the
-        operation if possible, does nothing if not the index is not valid.
+        In-place method for deleting a node located at a particular index in the linked list and returning
+        the associated value. If index is left as None (not provided), the default behavior will be to pop
+        from the end of the list. If the index provided is not valid, an IndexError is raised.
 
-        :param index: An integer denoting the location of the node to be deleted.
-        :returns: None.
+        :param index: An integer denoting the location of the node to be deleted. Must be [0, n-1].
+        :returns: The associated value if possible for this node to be removed.
         """
+        if self.n == 0:
+            raise IndexError("Cannot pop from an empty list")
+
+        index = self.n - 1 if index is None else index
+
         node = self._get(index)  # Attempt to get this node from the list
-        if node is not None:  # If index was valid, operate on the returned node
-            if self.n == 1:  # Remove the only node in the linked list
-                self.head, self.tail = None, None
-            else:  # Then there are at least 2 nodes in the linked list, we will
-                # have either a prev or next node or both
-                prev_node, next_node = node.prev_, node.next_
-                if prev_node is None:  # Delete the first element in the list
-                    self.head = node.next_  # Move head ref to next element
-                    self.head.prev_ = None  # Remove backward ref at new head
-                elif next_node is None:  # Delete the last element in the list
-                    self.tail = node.prev_  # Move the tail ref back 1 element
-                    self.tail.next_ = None  # Remove forward ref at new tail
-                else:  # Delete some middle element in the linked list
-                    prev_node.next_, next_node.prev_ = next_node, prev_node
-            self.n -= 1  # Update length of list counter
+        if node is None:
+            raise IndexError(f"Index={index} is out of range")
+
+        ans = node.val  # Make note of what value this is before removing the node
+        if self.n == 1:  # Remove the only node in the linked list
+            self.head, self.tail = None, None
+
+        else:  # Then there are at least 2 nodes in the linked list, we will
+            # have either a prev or next node or both
+            prev_node, next_node = node.prev_, node.next_
+            if prev_node is None:  # Delete the first element in the list
+                self.head = node.next_  # Move head ref to next element
+                self.head.prev_ = None  # Remove backward ref at new head
+            elif next_node is None:  # Delete the last element in the list
+                self.tail = node.prev_  # Move the tail ref back 1 element
+                self.tail.next_ = None  # Remove forward ref at new tail
+            else:  # Delete some middle element in the linked list
+                prev_node.next_, next_node.prev_ = next_node, prev_node
+
+        self.n -= 1  # Update length of list counter
+        return ans
+
+    def index(self, val: int) -> int:
+        """
+        Returns the first index where a given input value occurs in the linked list. If the provided value
+        cannot be found, an index error is raised.
+        """
+        idx = 0  # Track the index of the node as the linked list is traversed
+        node = self.head  # Begin with the head node
+        while node is not None:  # Iterate until we reach the tail
+            if node.val == val:  # Check if the target value is matched, if so return the index of occurence
+                return idx
+            else:  # Otherwise move to the next node and keep searching
+                node = node.next_
+                idx += 1
+        raise IndexError(f"Could not locate {val} in linked list")
+
+    def reverse(self) -> None:
+        """
+        In-place method that reverses the order of elements stored in the linked list.
+        """
+        if self.n > 1:  # Only need to take action if there is more than 1 node in the linked list
+            node = self.head  # The old head becomes the new tail
+            self.head, self.tail = self.tail, self.head  # Update pointers
+            while node is not None:  # Iterate through and reverse the pointers
+                node.next_, node.prev_ = node.prev_, node.next_
+                node = node.prev_  # The next node to visit is now the prev node
 
     def __len__(self) -> int:
+        """
+        Returns the length of the linked list.
+        """
         return self.n
 
     def __getitem__(self, index: int) -> Optional[DoublyListNode]:
@@ -357,7 +454,17 @@ class DoublyLinkedList:
         if node is not None:
             return node
         else:
-            raise KeyError(f"Index {index} is out of range")
+            raise IndexError(f"Index {index} is out of range")
+
+    def __setitem__(self, index: int, val: int) -> None:
+        """
+        Supports obj[index] = val updates to existing nodes in the linked list.
+        """
+        node = self.get(index, return_value=False)
+        if node is None:
+            raise IndexError(f"Index={index} out of range")
+        else:  # Update the value associated with this node
+            node.val = val
 
     def __iter__(self) -> Optional[DoublyListNode]:
         """
@@ -376,6 +483,9 @@ class DoublyLinkedList:
             yield yield_node
 
     def __repr__(self) -> str:
+        """
+        Returns a string representation of the linked list.
+        """
         if self.head is None:
             return "[]"
         else:
@@ -387,4 +497,7 @@ class DoublyLinkedList:
             return "[" + ", ".join(node_vals) + "]"
 
     def __str__(self) -> str:
+        """
+        Returns a string representation of the linked list.
+        """
         return self.__repr__()
