@@ -1,2 +1,2 @@
 # Data Structures
-This project contains a variety of data structures implemented in python with a set of tests that achieve a near 100% code coverage.
+This project contains a variety of data structures implemented in python with a set of tests that achieves nearly 100% code coverage. Data structures implemented in this repo include: Linked list, doubly linked list, min heap, max heap, deque, binary search tree, binary indexed tree, segment tree, disjoint sets (union find), trie, LRU cache, and LFU cache.
