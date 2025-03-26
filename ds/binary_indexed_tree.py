@@ -61,7 +61,7 @@ class BinaryIndexedTree:
             self.binary_idx_tree[idx - 1] += net_chg  # Apply the net change to this tree node
             idx = idx + (idx & -idx)  # Get the next parent range index
 
-    def _range_query(self, end: int) -> Union[float, int]:
+    def _prefix_sum(self, end: int) -> Union[float, int]:
         """
         Internal helper function for performing range queries. Computes the sum of all elements up through
         index end. This method is used by range_query to compute the sum of elements start:end by taking the
@@ -109,9 +109,9 @@ class BinaryIndexedTree:
         if start == end:  # Handle special edge case when start == end, return the entry of the original arr
             return self.arr[end]
 
-        ans = self._range_query(end)  # Compute the sum up through the end index
+        ans = self._prefix_sum(end)  # Compute the sum up through the end index
         if start > 0:  # If the start is above index 0, then subtract the sum of elements through (start - 1)
-            ans -= self._range_query(start - 1)  # so that the result is the sum of arr[start:(end + 1)]
+            ans -= self._prefix_sum(start - 1)  # so that the result is the sum of arr[start:(end + 1)]
         return ans
 
     def __setitem__(self, idx: int, val: Union[int, float]) -> None:
@@ -132,7 +132,7 @@ class BinaryIndexedTree:
         """
         return self.__repr__()
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         Returns the length of binary indexed tree.
         """

@@ -1,0 +1,1 @@
+To run tests from the command line use: python -m pytest --cov=ds/ --cov-report=html:tests/code_coverage
