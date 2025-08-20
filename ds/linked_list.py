@@ -4,7 +4,8 @@ Singly and doubly linked-lists data structures module, see help(LinkedList) and 
 details.
 """
 
-from typing import Union, Optional, List, Tuple, Iterable
+from __future__ import annotations
+from typing import Union, Optional, List, Tuple, Iterable, Any
 
 
 ##########################
@@ -16,7 +17,7 @@ class ListNode:
     A singly-linked list node.
     """
 
-    def __init__(self, val: int, next_=None):
+    def __init__(self, val: Any, next_: ListNode = None):
         self.val = val
         self.next_ = next_
 
@@ -67,7 +68,7 @@ class LinkedList:
         else:
             return node.val if return_value is True else node
 
-    def insert(self, index: int = None, val: int = None) -> None:
+    def insert(self, index: int = None, val: Any = None) -> None:
         """
         In-place method for adding a new node with a value of val at a given index in the linked list.
 
@@ -107,7 +108,7 @@ class LinkedList:
 
         self.n += 1  # Update length of list counter
 
-    def append(self, val: int) -> None:
+    def append(self, val: Any) -> None:
         """
         In-place method for appending a new value to the end of the linked list. This method is the same as
         using obj.insert(len(obj), val).
@@ -152,7 +153,7 @@ class LinkedList:
         self.n -= 1  # Update length of list counter
         return ans
 
-    def index(self, val: int) -> int:
+    def index(self, val: Any) -> int:
         """
         Returns the first index where a given input value occurs in the linked list. If the provided value
         cannot be found, an index error is raised.
@@ -209,7 +210,7 @@ class LinkedList:
         else:
             raise IndexError(f"Index={index} is out of range")
 
-    def __setitem__(self, index: int, val: int) -> None:
+    def __setitem__(self, index: int, val: Any) -> None:
         """
         Supports obj[index] = val updates to existing nodes in the linked list.
         """
@@ -222,11 +223,11 @@ class LinkedList:
     def __iter__(self) -> Optional[ListNode]:
         """
         Add support to allow for iteration e.g.
-            a = LinkedList()
-            a.addAtTail(1)
-            a.addAtTail(2)
-            a.addAtTail(3)
-            for node in a:
+            x = LinkedList()
+            x.append(1)
+            x.append(2)
+            x.append(3)
+            for node in x:
                 print(node.val)
         """
         current_node = self.head
@@ -255,6 +256,25 @@ class LinkedList:
         """
         return self.__repr__()
 
+    def __add__(self, x: LinkedList) -> LinkedList:
+        """
+        Handles the addition operator i.e. list_1 + list_2, creates and returns a new list object.
+        """
+        output_list = LinkedList()  # Create a new linked list object
+        for node in self:  # Iterate over all the nodes of this list and add their values
+            output_list.append(node.val)
+        for node in x:  # Iterate over all the nodes of the other list and add thier values
+            output_list.append(node.val)
+        return output_list
+
+    def __iadd__(self, x: LinkedList) -> None:
+        """
+        Handles in-place addition i.e. list_1 += list_2, alters the existing list object.
+        """
+        for node in x:  # Iterate over the nodes of the second list
+            self.append(node.val)  # Append the values of those nodes to this list
+        return self
+
 
 ##########################
 ### Doubly Linked List ###
@@ -265,7 +285,7 @@ class DoublyListNode:
     Doubly-linked list node.
     """
 
-    def __init__(self, val, prev_=None, next_=None):
+    def __init__(self, val: Any, prev_: DoublyListNode = None, next_: DoublyListNode = None):
         self.val = val
         self.prev_ = prev_
         self.next_ = next_
@@ -319,7 +339,7 @@ class DoublyLinkedList:
         else:
             return node.val if return_value is True else node
 
-    def insert(self, index: int = None, val: int = None) -> None:
+    def insert(self, index: int = None, val: Any = None) -> None:
         """
         In-place method for adding a new node with a value of val at a given index in the linked list.
 
@@ -363,7 +383,7 @@ class DoublyLinkedList:
 
         self.n += 1  # Update length of list counter
 
-    def append(self, val: int) -> None:
+    def append(self, val: Any) -> None:
         """
         In-place method for appending a new value to the end of the linked list. This method is the same as
         using obj.insert(len(obj), val).
@@ -410,7 +430,7 @@ class DoublyLinkedList:
         self.n -= 1  # Update length of list counter
         return ans
 
-    def index(self, val: int) -> int:
+    def index(self, val: Any) -> int:
         """
         Returns the first index where a given input value occurs in the linked list. If the provided value
         cannot be found, an index error is raised.
@@ -456,7 +476,7 @@ class DoublyLinkedList:
         else:
             raise IndexError(f"Index {index} is out of range")
 
-    def __setitem__(self, index: int, val: int) -> None:
+    def __setitem__(self, index: int, val: Any) -> None:
         """
         Supports obj[index] = val updates to existing nodes in the linked list.
         """
@@ -465,15 +485,15 @@ class DoublyLinkedList:
             raise IndexError(f"Index={index} out of range")
         else:  # Update the value associated with this node
             node.val = val
-
+git 
     def __iter__(self) -> Optional[DoublyListNode]:
         """
         Add support to allow for iteration e.g.
-            a = DoublyLinkedList()
-            a.addAtTail(1)
-            a.addAtTail(2)
-            a.addAtTail(3)
-            for node in a:
+            x = DoublyLinkedList()
+            x.append(1)
+            x.append(2)
+            x.append(3)
+            for node in x:
                 print(node.val)
         """
         current_node = self.head
@@ -501,3 +521,22 @@ class DoublyLinkedList:
         Returns a string representation of the linked list.
         """
         return self.__repr__()
+
+    def __add__(self, x: DoublyLinkedList) -> DoublyLinkedList:
+        """
+        Handles the addition operator i.e. list_1 + list_2, creates and returns a new list object.
+        """
+        output_list = DoublyLinkedList()  # Create a new linked list object
+        for node in self:  # Iterate over all the nodes of this list and add their values
+            output_list.append(node.val)
+        for node in x:  # Iterate over all the nodes of the other list and add thier values
+            output_list.append(node.val)
+        return output_list
+
+    def __iadd__(self, x: DoublyLinkedList) -> None:
+        """
+        Handles in-place addition i.e. list_1 += list_2, alters the existing list object.
+        """
+        for node in x:  # Iterate over the nodes of the second list
+            self.append(node.val)  # Append the values of those nodes to this list
+        return self

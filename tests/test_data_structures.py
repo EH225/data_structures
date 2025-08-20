@@ -22,10 +22,10 @@ def test_LinkedList():
         obj.insert(5, 20)
 
     with pytest.raises(ValueError):  # Test inserting without providing a value
-            obj.insert(5)
+        obj.insert(5)
 
     with pytest.raises(IndexError):  # Test updating a node at a non-existant index
-            obj[10] = 5
+        obj[10] = 5
 
     with pytest.raises(IndexError):  # Test popping from an empty list
         obj.pop()
@@ -52,7 +52,7 @@ def test_LinkedList():
         assert a == b.val
         assert obj.index(a) == idx
 
-    obj.reverse() # Reverse the order of the elements and run tests
+    obj.reverse()  # Reverse the order of the elements and run tests
     assert obj.head.val == test_data[-1], "Test for obj.head failed"
     assert obj.tail.val == test_data[0], "Test for obj.tail failed"
     for idx, (a, b) in enumerate(zip(test_data[::-1], obj)):
@@ -96,6 +96,23 @@ def test_LinkedList():
     obj[1] = 5
     assert obj[1].val == 5, "Test for set item failed"
 
+    a = LinkedList()
+    a_vals = [1, 2, 3]
+    for x in a_vals:
+        a.append(x)
+    b = LinkedList()
+    b_vals = [9, 10, 12]
+    for x in b_vals:
+        b.append(x)
+    c = a + b
+    assert isinstance(c, LinkedList)
+    for node, check_val in zip(c, a_vals + b_vals):
+        assert node.val == check_val
+    a += b
+    assert isinstance(a, LinkedList)
+    for node, check_val in zip(c, a_vals + b_vals):
+        assert node.val == check_val
+
 
 def test_DoublyLinkedList():
     """
@@ -111,10 +128,10 @@ def test_DoublyLinkedList():
         obj.insert(5, 20)
 
     with pytest.raises(ValueError):  # Test inserting without providing a value
-            obj.insert(5)
+        obj.insert(5)
 
     with pytest.raises(IndexError):  # Test updating a node at a non-existant index
-            obj[10] = 5
+        obj[10] = 5
 
     with pytest.raises(IndexError):  # Test popping from an empty list
         obj.pop()
@@ -141,7 +158,7 @@ def test_DoublyLinkedList():
         assert a == b.val
         assert obj.index(a) == idx
 
-    obj.reverse() # Reverse the order of the elements and run tests
+    obj.reverse()  # Reverse the order of the elements and run tests
     assert obj.head.val == test_data[-1], "Test for obj.head failed"
     assert obj.tail.val == test_data[0], "Test for obj.tail failed"
     for idx, (a, b) in enumerate(zip(test_data[::-1], obj)):
@@ -186,6 +203,23 @@ def test_DoublyLinkedList():
     obj.insert(3, 80)
     obj[1] = 5
     assert obj[1].val == 5, "Test for set item failed"
+
+    a = DoublyLinkedList()
+    a_vals = [1, 2, 3]
+    for x in a_vals:
+        a.append(x)
+    b = DoublyLinkedList()
+    b_vals = [9, 10, 12]
+    for x in b_vals:
+        b.append(x)
+    c = a + b
+    assert isinstance(c, DoublyLinkedList)
+    for node, check_val in zip(c, a_vals + b_vals):
+        assert node.val == check_val
+    a += b
+    assert isinstance(a, DoublyLinkedList)
+    for node, check_val in zip(c, a_vals + b_vals):
+        assert node.val == check_val
 
 
 def test_BinaryIndexTree():
@@ -322,30 +356,28 @@ def test_BinarySearchTree():
     assert obj.find_first_ge(obj.root.val) == obj.root.val, "find_first_ge check failed"
     obj.print_tree()  # Should run without crashing
 
-
-
     obj = BinarySearchTree()
     assert obj.preOrderTraversal() == [], "Failed empty traversal test"
     assert obj.inOrderTraversal() == [], "Failed empty traversal test"
     assert obj.postOrderTraversal() == [], "Failed empty traversal test"
     assert obj.levelOrderTraversal() == [], "Failed empty traversal test"
     assert obj.isValidBST() is True, "Failed isValidBST empty tree test"
-    obj.delete(5) # Delete from a blank tree
+    obj.delete(5)  # Delete from a blank tree
     assert obj.n == 0
 
-    obj.insert(5) # Add 1 element, then delete it
-    obj.delete(5) # Delete the root node
-    assert obj.n == 0 # Check that this ran and the size is recorded as 0
+    obj.insert(5)  # Add 1 element, then delete it
+    obj.delete(5)  # Delete the root node
+    assert obj.n == 0  # Check that this ran and the size is recorded as 0
 
-    obj.insert(5) # Add the same element multiple times and make sure the valid BST check still passes
+    obj.insert(5)  # Add the same element multiple times and make sure the valid BST check still passes
     obj.insert(5)
     obj.insert(4)
     obj.insert(4)
     obj.insert(0)
     assert obj.isValidBST() is True, "Insertion of duplicate elements validation check failed"
-    obj.root.val = 50 # This will make the BST no longer valid
+    obj.root.val = 50  # This will make the BST no longer valid
     assert obj.isValidBST() is False, "Validation check failed to catch invalid BST"
-    obj.root.val = -50 # This will make the BST no longer valid
+    obj.root.val = -50  # This will make the BST no longer valid
     assert obj.isValidBST() is False, "Validation check failed to catch invalid BST"
 
     obj = BinarySearchTree()
