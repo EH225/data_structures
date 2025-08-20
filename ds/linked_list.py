@@ -485,7 +485,7 @@ class DoublyLinkedList:
             raise IndexError(f"Index={index} out of range")
         else:  # Update the value associated with this node
             node.val = val
-git 
+
     def __iter__(self) -> Optional[DoublyListNode]:
         """
         Add support to allow for iteration e.g.
