@@ -8,7 +8,7 @@ from ds.heaps import MinHeap, MaxHeap
 from ds.deque import Deque
 from ds.binary_search_tree import BinarySearchTree
 from ds.binary_indexed_tree import BinaryIndexedTree
-from ds.segment_tree import SegmentTree
+from ds.segment_tree import SegmentTree, SegmentTreeLight
 from ds.disjoint_sets import DisjointSets
 from ds.trie import Trie
 from ds.cache import LRUCache, LFUCache

@@ -4,8 +4,8 @@ Tests for all data structures contains in this repo.
 """
 
 from all_ds import BinarySearchTree, BinaryIndexedTree, Deque, DisjointSets, MinHeap, MaxHeap, LinkedList
-from all_ds import DoublyLinkedList, SegmentTree, Trie, LRUCache, LFUCache
-import pytest
+from all_ds import DoublyLinkedList, SegmentTree, SegmentTreeLight, Trie, LRUCache, LFUCache
+import pytest, math
 
 
 def test_LinkedList():
@@ -289,8 +289,80 @@ def test_SegmentTree():
     assert obj.pop() == test_data.pop()
     assert obj.range_query(2, 4) == sum(test_data[2:5]), "Failed pop update test"
 
+    # Test the other possiable eval functions
+    err_msg = "Failed range_query test"
+    obj = SegmentTree(test_data, "max")
+    for start in range(len(test_data)):  # Run tests on all possiable ranges
+        for end in range(start, len(test_data)):
+            assert max(test_data[start:end + 1]) == obj.range_query(start, end), err_msg
+
+    obj = SegmentTree(test_data, "min")
+    for start in range(len(test_data)):  # Run tests on all possiable ranges
+        for end in range(start, len(test_data)):
+            assert min(test_data[start:end + 1]) == obj.range_query(start, end), err_msg
+
+    test_data2 = [1, 2, 3, 5, 8, 10, 12, 15]
+
+    obj = SegmentTree(test_data2, "gcd")
+    for start in range(len(test_data2)):  # Run tests on all possiable ranges
+        for end in range(start, len(test_data2)):
+            assert math.gcd(*test_data2[start:end + 1]) == obj.range_query(start, end), err_msg
+
+    obj = SegmentTree(test_data2, "lcm")
+    for start in range(len(test_data2)):  # Run tests on all possiable ranges
+        for end in range(start, len(test_data2)):
+            assert math.lcm(*test_data2[start:end + 1]) == obj.range_query(start, end), err_msg
+
     with pytest.raises(ValueError):  # Test selecting an unknown eval function
         obj = SegmentTree(test_data, "xyz")
+
+
+def test_SegmentTreeLight():
+    """
+    Runs basic tests for the SegmentTreeLight data structure, tests methods and functionality.
+    """
+    test_data = [1, 2, 3, 5, 8, -10, 12]
+    obj = SegmentTreeLight(test_data, "sum")
+    assert len(obj) == len(test_data), "Failed len(obj) test"
+    assert isinstance(str(obj), str), "Failed string representation test"
+
+    for start in range(len(test_data)):  # Run tests on all possiable ranges
+        for end in range(start, len(test_data)):
+            assert sum(test_data[start:end + 1]) == obj.range_query(start, end), "Failed range_query test"
+
+    obj.update(2, 5)
+    test_data[2] = 5
+    assert obj.range_query(1, 3) == sum(test_data[1:4]), "Failed update test"
+
+    obj[2] = -5
+    test_data[2] = -5
+    assert obj.range_query(0, 4) == sum(test_data[0:5]), "Failed update test"
+
+    obj[2] = 25
+    test_data[2] = 25
+    assert obj.range_query(2, 3) == sum(test_data[2:4]), "Failed update test"
+
+    obj[2] = 25
+    assert obj.range_query(2, 3) == sum(test_data[2:4]), "Failed update test - no change update"
+
+    test_data = [1, 2, 3, 5, 8, -10, 12]
+    obj = SegmentTreeLight(test_data, "sum")
+    assert len(obj) == len(test_data), "Failed len(obj) test"
+    assert isinstance(str(obj), str), "Failed string representation test"
+
+    # Test the other 2 possiable eval functions
+    obj = SegmentTreeLight(test_data, "max")
+    for start in range(len(test_data)):  # Run tests on all possiable ranges
+        for end in range(start, len(test_data)):
+            assert max(test_data[start:end + 1]) == obj.range_query(start, end), "Failed range_query test"
+
+    obj = SegmentTreeLight(test_data, "min")
+    for start in range(len(test_data)):  # Run tests on all possiable ranges
+        for end in range(start, len(test_data)):
+            assert min(test_data[start:end + 1]) == obj.range_query(start, end), "Failed range_query test"
+
+    with pytest.raises(ValueError):  # Test selecting an unknown eval function
+        obj = SegmentTreeLight(test_data, "xyz")
 
 
 def test_BinarySearchTree():
