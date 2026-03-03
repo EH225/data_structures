@@ -20,10 +20,10 @@ class ListNode:
 
 class LRUCache:
     """
-    Least recently used cache (LFU) data structure. Caches elements and drops the one that was least recently
+    Least recently used cache (LRU) data structure. Caches elements and drops the one that was least recently
     used when at capacity and adding a new element. This data structure helps cache values that may be useful
     to have in memory later to prevent duplicative computations, while also limiting how much total memory
-    is used to retain prior results. Operates much like a dictionary but with a limited number of keys
+    is used to retain prior results. Operates much like a dictionary, but with a limited number of keys
     retained.
 
     Great explination: https://www.romaglushko.com/blog/design-lru-cache/
@@ -42,7 +42,7 @@ class LRUCache:
 
     def get(self, key: int) -> Optional[int]:
         """
-        Returns the value associated with a key if it exists, and None otherwise.
+        Returns the value associated with a key if it exists, returns None otherwise.
 
         :param key: The lookup key of an element in the LRU cache.
         :returns: The value associated with the key if found, otherwise returns None.
@@ -62,21 +62,21 @@ class LRUCache:
         :param key: The lookup key of an element in the LRU cache.
         :returns: None, updates the internal usage recency usage associated with this key.
         """
-        node_pointer = self.dict[key][1]  # Get the node pointer of this key
-        if node_pointer == self.tail:  # If this node is already the tail node
+        node = self.dict[key][1]  # Get the node pointer of this key
+        if node == self.tail:  # If this node is already the tail node
             return None  # then return None, nothing to update
         else:  # Move this existing node from where it currently is to the tail
-            if node_pointer == self.head:  # If the head node, handle special case
+            if node == self.head:  # If the head node, handle special case
                 # self.head != self.tail since the above condition was not met
                 self.head = self.head.next_  # Move to the next node
                 self.head.prev_ = None  # Disconnect to make this the new head
             else:  # If not the first node, nor the last, update pointers
                 # Link the prior node to the next node to skip over this node
-                node_pointer.prev_.next_ = node_pointer.next_
-                node_pointer.next_.prev_ = node_pointer.prev_
+                node.prev_.next_ = node.next_
+                node.next_.prev_ = node.prev_
             # Now add this removed node to the end as a new node
-            self.tail.next_ = node_pointer  # Move to the tail of the LL
-            node_pointer.prev_ = self.tail  # Link backwards
+            self.tail.next_ = node  # Move to the tail of the LL
+            node.prev_ = self.tail  # Link backwards
             self.tail = self.tail.next_  # Update the tail reference
             self.tail.next_ = None  # Break the old next connection, the tail
             # node should always have a .next_ pointing to None
@@ -84,10 +84,10 @@ class LRUCache:
     def put(self, key: int, value: int) -> None:
         """
         Adds a new key:value pair to the LRU cache or updates the value associated with key if key is
-        already an existing key:value pair in the cache,
+        already an existing key:value pair in the cache.
 
-        :param key: aasda
-        :param value: adasda
+        :param key: THe lookup key to add / update in the LRU cache.
+        :param value: The value associated with the key to add / update in the cache.
         :returns: None, adds the input data to the internal data structures.
         """
         # If the key already exists, update the value already there
